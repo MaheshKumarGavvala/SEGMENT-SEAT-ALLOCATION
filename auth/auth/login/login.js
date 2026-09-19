@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         role: role.value
       });
       SmartSegmentAPI.setSession(response.data || response);
-      window.location.assign(role.value === "admin" ? "/admin/dashboard/dashboard.html" : "/user/dashboard/index.html");
+      window.location.assign(role.value === "admin" ? "/SEGMENT-SEAT-ALLOCATION/admin/dashboard/dashboard.html" : "/SEGMENT-SEAT-ALLOCATION/user/dashboard/index.html");
     } catch (error) {
       msg.textContent = error.message || "Unable to sign in. Please try again.";
       btn.disabled = false;
