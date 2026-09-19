@@ -13,6 +13,15 @@ const config = {
   connectTimeout: 5000,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
+
+  // Enable SSL when DB_SSL=true
+  ...(process.env.DB_SSL === 'true'
+    ? {
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
+    : {}),
 };
 
 if (process.env.DB_SOCKET) {
@@ -30,7 +39,11 @@ async function checkDatabase() {
     await conn.query('SELECT 1');
     return { ok: true };
   } catch (error) {
-    return { ok: false, code: error.code, message: error.message };
+    return {
+      ok: false,
+      code: error.code,
+      message: error.message
+    };
   } finally {
     conn?.release();
   }
