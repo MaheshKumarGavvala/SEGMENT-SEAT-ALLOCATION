@@ -41,7 +41,7 @@ async function loadDashboardData(){
       const timeout=setTimeout(()=>controller.abort(),5000);
       let res;
       try{
-        res=await fetch(`/api/stops?_=${Date.now()}`,{
+	res=await fetch(`https://segment-seat-allocation.onrender.com/api/stops?_=${Date.now()}`,{
           method:'GET',
           headers:{'Accept':'application/json','Cache-Control':'no-cache'},
           cache:'no-store',
@@ -103,7 +103,7 @@ function render(input,drop,type){
 }
 async function loadStopsForSearch(input,drop,type){
  try{
-   const res=await fetch(`/api/stops?_=${Date.now()}`,{headers:{'Accept':'application/json'},cache:'no-store'});
+   const res=await fetch(`https://segment-seat-allocation.onrender.com/api/stops?_=${Date.now()}`,{headers:{'Accept':'application/json'},cache:'no-store'});
    const payload=await res.json().catch(()=>({}));
    if(!res.ok)throw new Error(payload.message||`Could not load stops (HTTP ${res.status}).`);
    stops=Array.isArray(payload.data)?payload.data:[];stopsLoaded=true;
