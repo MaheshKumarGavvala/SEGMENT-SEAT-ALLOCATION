@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Segment — Select Stops & Seats</title>
+<link rel="stylesheet" href="seat-selection.css">
+<script>(function(){
+if(window.top!==window.self){document.documentElement.classList.add('embedded');try{document.documentElement.dataset.theme=localStorage.getItem('smartSegmentTheme')||'light'}catch(e){}window.addEventListener('message',function(e){if(e.data&&e.data.type==='theme')document.documentElement.dataset.theme=e.data.theme})}
+})();</script>
+<script>(function(){
+ if(window.top!==window.self){
+  document.documentElement.classList.add("embedded");
+  try{document.documentElement.dataset.theme=localStorage.getItem("smartSegmentTheme")||"light"}catch(e){}
+  window.addEventListener("message",function(e){if(e.data&&e.data.type==="theme")document.documentElement.dataset.theme=e.data.theme});
+ }
+})();</script>
+<style id="dashboard-embedded-style">
+html.embedded .main{padding:40px!important;box-sizing:border-box!important}
+
+html.embedded .header,
+html.embedded .topbar,
+html.embedded .app-header,
+html.embedded .top,
+html.embedded .global-header,
+html.embedded .site-header { display:none !important; }
+html.embedded body { padding-top:0 !important; }
+</style>
+<link rel="stylesheet" href="../../auth/shared/css/ui-polish.css">
+</head>
+<body>
+<header class="topbar">
+ <a class="brand" href="#" id="brandHome"><span class="brand-logo"><span></span></span><span><b>SMART SEGMENT</b><small>Journey intelligence</small></span></a>
+ <div class="top-actions"><button class="theme-btn" id="theme">☾</button><button class="profile"><span class="avatar">M</span><span class="profile-copy"><b>Mahesh</b><small>Passenger</small></span><span>⌄</span></button></div>
+</header>
+<main>
+ <div class="progress"><div class="step done"><b>01</b><span>Search</span></div><i></i><div class="step done"><b>02</b><span>Stops</span></div><i></i><div class="step active"><b>03</b><span>Stops & Seats</span></div><i></i><div class="step"><b>04</b><span>Passenger</span></div><i></i><div class="step"><b>05</b><span>Payment</span></div></div>
+
+ <section class="heading"><div><div class="eyebrow"><span></span> STEP 03 · SEGMENT SEAT ALLOCATION</div><h1>Choose your <span>stops & seat.</span></h1><p>Use one seat for each journey segment. Covered stops are locked automatically after a segment is selected.</p></div><div class="availability"><i></i><div><b id="availabilityCount">24 seats</b><small>available on this service</small></div></div></section>
+
+ <section class="layout">
+  <section class="left-panel">
+   <section class="trip-card">
+    <div class="trip-main"><div class="bus-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 17V7.5A2.5 2.5 0 0 1 8.5 5h7A2.5 2.5 0 0 1 18 7.5V17M6 10h12M8 19h.01M16 19h.01M7 17v2m10-2v2"/></svg></div><div><span class="label">YOUR BUS</span><h2 id="busName">Selected bus</h2><p id="busType">Selected service</p></div></div>
+    <div class="trip-meta"><div><small>DATE</small><b id="journeyDate">—</b></div><div><small>ROUTE</small><b id="routeText">Selected route</b></div></div>
+   </section>
+
+   <section class="stop-card">
+    <div class="card-head"><div><span class="label">1 · SELECT STOPS</span><h2>Choose boarding & drop-off</h2><p>Select a boarding stop first, then a later stop.</p></div><span class="counter"><b id="stopCounter">0</b>/2</span></div>
+    <div class="timeline" id="timeline"></div>
+    <div class="selected-row">
+      <div class="stop-field"><small>FROM · BOARDING</small><b id="fromName">Select a stop</b><span id="fromCity">—</span><button id="clearFrom" aria-label="Clear boarding">×</button></div>
+      <div class="arrow">→</div>
+      <div class="stop-field"><small>TO · DROP-OFF</small><b id="toName">Select a later stop</b><span id="toCity">—</span><button id="clearTo" aria-label="Clear drop-off">×</button></div>
+    </div>
+    <div class="segment-ready" id="segmentReady"><span>SELECTED SEGMENT</span><b id="segmentText">Choose two stops</b></div>
+    <div class="helper" id="helper"><span>i</span><div><b id="helperTitle">Start with your boarding stop</b><small id="helperText">Choose any available stop on the route.</small></div></div>
+   </section>
+
+   <section class="map-card" id="mapCard" hidden>
+    <div class="map-head"><div><span class="label">2 · SELECT SEAT</span><h2>Select a seat for <span id="mapSegment">your segment</span></h2><p>Seats already used across this segment are automatically unavailable.</p></div><div class="map-head-actions"><div class="legend"><span><i class="dot available"></i>Available</span><span><i class="dot selected"></i>Selected</span><span><i class="dot occupied"></i>Booked</span><span><i class="dot locked"></i>Segment locked</span></div></div></div>
+    <div class="map-info"><span>✓</span><div><b>Segment-aware seat locking</b><small>If Seat 8 is booked A → E, the same Seat 8 cannot be reused for any overlapping section A → E.</small></div></div>
+    <div class="bus-stage"><div class="bus"><div class="front"><div class="windshield">FRONT</div><div class="driver"><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 5v5m-7 2h5m2 0h5"/></svg></span><b>DRIVER</b></div></div><div class="deck-label"><b>LOWER DECK</b><span>4-COLUMN SEATING</span></div><div class="seat-grid" id="seatGrid"></div><div class="rear"><span>REAR</span></div></div></div>
+    <div class="map-footer"><span id="mapStatus">Select an available seat.</span><button class="choose-another" id="changeSegment">Choose Another Segment</button></div>
+   </section>
+  </section>
+
+  <aside class="right-panel">
+   <div class="right-head"><div><span class="label">LIVE SELECTION</span><h2>Selected Seats</h2></div><button class="clear-all" id="clearAll">Clear all</button></div>
+   <section class="segments-section"><div class="section-title"><h3>Selected Seats</h3><span id="segmentCount">0</span></div><div id="segmentsList" class="segments-list"><div class="empty">Select a seat and its segment will appear here instantly.</div></div></section>
+   <div class="right-bottom"><button class="continue disabled" id="continueBtn" disabled>Continue to Passenger Details <b>→</b></button></div>
+  </aside>
+ </section>
+ <footer><span><b>Smart Segment</b> · Intelligent seat allocation</span><span>Step 3 of 5</span></footer>
+</main><div class="toast" id="toast"></div><script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script src="seat-selection.js"></script>
+</body></html>

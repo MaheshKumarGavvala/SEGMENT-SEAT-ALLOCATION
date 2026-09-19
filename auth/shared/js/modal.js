@@ -1,0 +1,1 @@
+/* Smart Segment modal helper placeholder. */

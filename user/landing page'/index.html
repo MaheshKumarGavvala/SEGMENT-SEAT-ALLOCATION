@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Segment — Intelligent multi-segment seat allocation</title>
+<meta name="description" content="Smart Segment intelligently combines consecutive seat segments to help complete a passenger journey when one seat is unavailable throughout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>document.documentElement.dataset.theme=localStorage.getItem("smartSegmentTheme")||"light";</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="scrollProgress" aria-hidden="true"></div>
+<div class="topbar"><span><i data-lucide="sparkles"></i> Smarter seat allocation for modern bus journeys</span><span class="topbar-right"><i data-lucide="shield-check"></i> Designed for clear, dependable reservations</span></div>
+
+<header class="header">
+  <a class="brand" href="#home">
+    <span class="brand-symbol"><span></span><i data-lucide="bus-front"></i></span>
+    <span class="brand-word">SMART <b>SEGMENT</b><small>JOURNEY-AWARE RESERVATIONS</small></span>
+  </a>
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="active" href="#home"><i data-lucide="house"></i><span>Home</span></a>
+    <a href="#how"><i data-lucide="route"></i><span>How It Works</span></a>
+    <a href="#smart"><i data-lucide="sparkles"></i><span>Smart Segment</span></a>
+    <a href="#benefits"><i data-lucide="badge-check"></i><span>Benefits</span></a>
+    <a href="#comparison"><i data-lucide="columns-3"></i><span>Comparison</span></a>
+    <a href="#faq"><i data-lucide="circle-help"></i><span>FAQ</span></a>
+  </nav>
+  <div class="header-actions">
+    <button class="theme-btn" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode"><i data-lucide="sun"></i><span class="switch"><b></b></span><i data-lucide="moon"></i></button>
+    <a class="account" href="../../auth/auth/login/login.html"><i data-lucide="user-round"></i><span>Login / Sign Up</span></a>
+    <a class="header-cta" href="../../auth/auth/login/login.html">Get Started <i data-lucide="arrow-up-right"></i></a>
+    <button class="menu" aria-label="Open menu"><i data-lucide="menu"></i></button>
+  </div>
+</header>
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <a href="#home"><i data-lucide="house"></i><span>Home</span></a>
+  <a href="#how"><i data-lucide="route"></i><span>How It Works</span></a>
+  <a href="#smart"><i data-lucide="sparkles"></i><span>Smart Segment</span></a>
+  <a href="#benefits"><i data-lucide="badge-check"></i><span>Benefits</span></a>
+  <a href="#comparison"><i data-lucide="columns-3"></i><span>Comparison</span></a>
+  <a href="#faq"><i data-lucide="circle-help"></i><span>FAQ</span></a>
+</nav>
+
+<main>
+<section class="hero" id="home">
+  <div class="hero-content reveal">
+    <div class="hero-badge"><span class="pulse"></span> THE SMARTER WAY TO RESERVE</div>
+    <h1>Every journey deserves a <span>smarter seat.</span></h1>
+    <p class="hero-text">Smart Segment understands where passengers board, the stops they travel through, and where they finish — then brings that journey context into seat allocation.</p>
+
+    <div class="hero-points">
+      <span><i data-lucide="route"></i> Journey-aware</span>
+      <span><i data-lucide="armchair"></i> Seat-aware</span>
+      <span><i data-lucide="sparkles"></i> Recommendation-ready</span>
+    </div>
+
+    <div class="search-panel" id="booking">
+      <div class="search-title"><div><b>Find your bus</b><small>Start your journey in a few simple steps.</small></div><span><i data-lucide="lock-keyhole"></i> Secure booking</span></div>
+      <div class="search-fields">
+        <div class="search-field"><i data-lucide="map-pin"></i><div><label>FROM</label><b>Boarding Stop</b><small>Choose your boarding point</small></div></div>
+        <button class="swap" aria-label="Swap locations"><i data-lucide="arrow-left-right"></i></button>
+        <div class="search-field"><i data-lucide="map-pin"></i><div><label>TO</label><b>Destination</b><small>Choose where you finish</small></div></div>
+        <div class="search-field date"><i data-lucide="calendar-days"></i><div><label>TRAVEL DATE</label><b>Select date</b><small>Choose your travel day</small></div><i class="chev" data-lucide="chevron-down"></i></div>
+        <button class="search-btn" id="landingSearch" type="button"><i data-lucide="search"></i><span>Search Buses</span></button>
+      </div>
+      <div class="search-note"><i data-lucide="info"></i> Smart Segment becomes part of the experience when you choose your seat.</div>
+    </div>
+  </div>
+
+  <div class="hero-visual reveal">
+    <div class="hero-image-wrap">
+      <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1900&q=90" alt="Modern intercity coach bus">
+      <div class="hero-image-gradient"></div>
+    </div>
+    <div class="route-overlay">
+      <div class="overlay-head"><div><small>SMART SEGMENT</small><b>Journey intelligence</b></div><span class="optimized"><i data-lucide="check-circle-2"></i> Optimized</span></div>
+      <div class="overlay-route">
+        <div class="o-stop active"><span></span><b>Boarding</b></div><i></i>
+        <div class="o-stop"><span></span><b>Stop 1</b></div><i></i>
+        <div class="o-stop"><span></span><b>Stop 2</b></div><i></i>
+        <div class="o-stop"><span></span><b>Stop 3</b></div><i></i>
+        <div class="o-stop destination"><span></span><b>Destination</b></div>
+      </div>
+      <div class="overlay-foot"><span>Passenger journey</span><b>Segment-aware allocation</b></div>
+    </div>
+    <div class="floating-seat">
+      <div class="floating-seat-icon"><i data-lucide="armchair"></i></div>
+      <div><small>RECOMMENDED SEAT</small><b>Seat 2B</b><span>Strong fit for this journey</span></div>
+      <i data-lucide="check-circle-2"></i>
+    </div>
+  </div>
+</section>
+
+<section class="trust-strip">
+  <div><span><i data-lucide="armchair"></i></span><b>Intelligent Seat Allocation</b><small>Right context for every segment</small></div>
+  <div><span><i data-lucide="route"></i></span><b>Multiple Journey Segments</b><small>One bus, different journeys</small></div>
+  <div><span><i data-lucide="shield-check"></i></span><b>Clear & Reliable</b><small>Built around understandable logic</small></div>
+  <div><span><i data-lucide="smartphone"></i></span><b>Easy Booking</b><small>Simple from search to ticket</small></div>
+  <div><span><i data-lucide="heart"></i></span><b>Better Travel</b><small>A calmer seat-selection experience</small></div>
+</section>
+
+<section class="section intro" id="how">
+  <div class="section-label">01 / THE IDEA</div>
+  <div class="intro-top">
+    <div><h2>One passenger.<br><span>One complete journey.</span><br>Multiple seat segments.</h2></div>
+    <div><p>Smart Segment is designed for the situation where a passenger needs to travel the entire route, but one physical seat is not available for every part of that journey.</p><p>Instead of stopping at “no single seat available”, the system can split the journey into consecutive segments and find available seats that together cover the complete trip.</p></div>
+  </div>
+
+  <div class="allocation-demo reveal">
+    <div class="demo-head"><div><small>SMART SEGMENT ALLOCATION</small><h3>See one complete journey solved with two seats.</h3></div><span class="demo-pill"><i data-lucide="sparkles"></i> Complete journey covered</span></div>
+    <div class="route-allocation">
+      <div class="route-track"><span></span><i></i><span></span><i></i><span></span><i></i><span></span><i></i><span></span></div>
+      <div class="route-labels"><b>Boarding Stop</b><b>Stop 1</b><b>Stop 2</b><b>Stop 3</b><b>Destination</b></div>
+    </div>
+    <div class="allocation-bars">
+      <div class="alloc-row">
+        <div class="alloc-meta"><span class="seat-chip blue">12A</span><div><b>Seat 12A</b><small>First available seat segment</small></div></div>
+        <div class="alloc-bar"><span class="covered one"></span></div>
+        <strong>Boarding Stop → Stop 2</strong>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-meta"><span class="seat-chip purple">18B</span><div><b>Seat 18B</b><small>Second available seat segment</small></div></div>
+        <div class="alloc-bar"><span class="covered two"></span></div>
+        <strong>Stop 2 → Destination</strong>
+      </div>
+    </div>
+    <div class="allocation-result"><div class="result-icon"><i data-lucide="check-circle-2"></i></div><div><small>SMART RESULT</small><b>Complete journey allocated</b><span>Seat 12A → Seat 18B · No uncovered segment</span></div><div class="result-badge">2 SEAT SEGMENTS</div></div>
+  </div>
+
+  <div class="three-info">
+    <article><div class="info-icon blue"><i data-lucide="route"></i></div><small>STEP 01</small><h3>Read the complete journey</h3><p>Understand the passenger's boarding point, intermediate stops and final destination.</p></article>
+    <article><div class="info-icon purple"><i data-lucide="split"></i></div><small>STEP 02</small><h3>Find consecutive coverage</h3><p>Break the trip into segments and look for available seats that cover them without a gap.</p></article>
+    <article><div class="info-icon green"><i data-lucide="armchair"></i></div><small>STEP 03</small><h3>Allocate the seats</h3><p>Present a clear segment-by-segment allocation so the passenger knows exactly when a seat changes.</p></article>
+  </div>
+</section>
+
+<section class="section smart-section" id="smart"> id="smart">
+  <div class="section-label">02 / SMART SEGMENT</div>
+  <div class="section-title-row"><h2>From route data to a <span>better seat decision.</span></h2><p>Smart Segment adds a focused intelligence layer without making the booking experience complicated.</p></div>
+  <div class="feature-cards">
+    <article class="feature-card dark-card"><div class="feature-top"><span>01</span><div class="feature-icon"><i data-lucide="route"></i></div></div><small>JOURNEY CONTEXT</small><h3>Knows the full journey.</h3><p>Understands the complete trip before looking for a seat allocation.</p><a href="#comparison">Explore <i data-lucide="arrow-right"></i></a></article>
+    <article class="feature-card"><div class="feature-top"><span>02</span><div class="feature-icon blue"><i data-lucide="layers-3"></i></div></div><small>SEGMENT LOGIC</small><h3>Finds covered segments.</h3><p>Breaks the journey into consecutive portions that available seats can cover.</p><a href="#how">See segments <i data-lucide="arrow-right"></i></a></article>
+    <article class="feature-card"><div class="feature-top"><span>03</span><div class="feature-icon green"><i data-lucide="scan-search"></i></div></div><small>SEAT CONTEXT</small><h3>Looks beyond empty.</h3><p>Availability can be considered together with the passenger's journey.</p><a href="#seat">See seat logic <i data-lucide="arrow-right"></i></a></article>
+    <article class="feature-card"><div class="feature-top"><span>04</span><div class="feature-icon orange"><i data-lucide="sparkles"></i></div></div><small>SMART DECISION</small><h3>Builds one complete allocation.</h3><p>Combines valid seat segments and clearly shows where the passenger changes seats.</p><a href="#booking-flow">See booking flow <i data-lucide="arrow-right"></i></a></article>
+  </div>
+</section>
+
+<section class="section seat-story" id="seat">
+  <div class="seat-story-image reveal"><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1700&q=90" alt="Coach bus travelling on a road"><div class="image-overlay"></div><div class="image-caption"><small>THE REAL-WORLD CONTEXT</small><h2>Every seat sits<br>inside a journey.</h2></div></div>
+  <div class="seat-story-content reveal"><div class="section-label">03 / SEAT INTELLIGENCE</div><h2>A familiar seat map.<br><span>Smarter allocation.</span></h2><p>The passenger still sees a familiar seat map. Smart Segment adds the missing layer: which seat is available for which portion of the journey, and how consecutive seats can complete the trip.</p>
+    <div class="seat-ui">
+      <div class="seat-ui-head"><b>Choose your seat</b><span><i class="key available"></i>Available <i class="key selected"></i>Selected <i class="key blocked"></i>Unavailable</span></div>
+      <div class="seat-cabin"><div class="steering"><i data-lucide="steering-wheel"></i></div><div class="seat-col"><button>1A</button><button class="selected">2A</button><button>3A</button><button class="blocked">4A</button></div><div></div><div class="seat-col"><button>1B</button><button class="best">2B <small>BEST FIT</small></button><button>3B</button><button class="blocked">4B</button></div></div>
+      <div class="smart-note"><span><i data-lucide="sparkles"></i></span><p><b>Smart allocation</b> 12A covers the first segment. 18B covers the remaining journey.</p><i data-lucide="check-circle-2"></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="section benefits-section" id="benefits">
+  <div class="center-heading"><div class="section-label">04 / BENEFITS</div><h2>Built around the passenger's <span>actual journey.</span></h2><p>Smart Segment connects route context and seat context to create a more useful reservation experience.</p></div>
+  <div class="benefit-cards">
+    <article><span class="benefit-number">01</span><div class="round-icon"><i data-lucide="map-pinned"></i></div><h3>Journey-aware</h3><p>Boarding, stops and destination are treated as part of one journey context.</p><div class="benefit-foot">ROUTE CONTEXT <i data-lucide="arrow-up-right"></i></div></article>
+    <article><span class="benefit-number">02</span><div class="round-icon"><i data-lucide="armchair"></i></div><h3>Seat-aware</h3><p>Seats can be evaluated in relation to the passenger's relevant route segment.</p><div class="benefit-foot">SEAT CONTEXT <i data-lucide="arrow-up-right"></i></div></article>
+    <article><span class="benefit-number">03</span><div class="round-icon"><i data-lucide="brain-circuit"></i></div><h3>Intelligent</h3><p>Adds a recommendation layer to a familiar reservation workflow.</p><div class="benefit-foot">DECISION LAYER <i data-lucide="arrow-up-right"></i></div></article>
+    <article><span class="benefit-number">04</span><div class="round-icon"><i data-lucide="badge-check"></i></div><h3>Understandable</h3><p>Keeps the result clear so passengers can trust the booking experience.</p><div class="benefit-foot">PASSENGER CLARITY <i data-lucide="arrow-up-right"></i></div></article>
+  </div>
+</section>
+
+<section class="section comparison" id="comparison">
+  <div class="comparison-heading"><div><div class="section-label">05 / THE DIFFERENCE</div><h2>Traditional reservation<br><span>vs. Smart Segment.</span></h2></div><div><p>Same bus. Same route. A more context-aware approach to seat allocation.</p><div class="comparison-legend"><span><i></i> Traditional</span><span><i></i> Smart Segment</span></div></div></div>
+  <div class="comparison-table">
+    <div class="table-head"><div>CAPABILITY</div><div>TRADITIONAL</div><div class="smart-head">SMART SEGMENT</div></div>
+    <div class="table-row"><div><i data-lucide="map-pin"></i><b>Complete journey</b></div><div>Looks for one seat across the trip</div><div class="smart-cell"><strong>Starts with the complete journey requirement</strong></div></div>
+    <div class="table-row"><div><i data-lucide="armchair"></i><b>When one seat is unavailable</b></div><div>May show no suitable seat</div><div class="smart-cell"><strong>Searches for consecutive seat segments</strong></div></div>
+    <div class="table-row"><div><i data-lucide="route"></i><b>Segment coverage</b></div><div>Not central to seat selection</div><div class="smart-cell"><strong>Maps every seat to the portion it covers</strong></div></div>
+    <div class="table-row"><div><i data-lucide="workflow"></i><b>Seat changes</b></div><div>Not applicable when one seat is required</div><div class="smart-cell"><strong>Can explicitly show where the passenger changes seats</strong></div></div>
+    <div class="table-row"><div><i data-lucide="shield-check"></i><b>Journey coverage</b></div><div>Single-seat availability determines success</div><div class="smart-cell"><strong>Every segment must be covered before allocation is valid</strong></div></div>
+    <div class="table-row"><div><i data-lucide="sparkles"></i><b>Result</b></div><div>Seat available / unavailable</div><div class="smart-cell"><strong>Complete allocation: 12A → 18B → destination</strong></div></div>
+  </div></div>
+</section>
+
+<section class="section booking-section" id="booking-flow">
+  <div class="center-heading"><div class="section-label">06 / BOOKING JOURNEY</div><h2>Simple for the passenger.<br><span>Smart behind the scenes.</span></h2><p>Smart Segment fits naturally between choosing a bus and confirming the reservation.</p></div>
+  <div class="flow-line">
+    <div><span>01</span><i data-lucide="search"></i><b>Search</b><small>Find a journey</small></div><i class="arrow" data-lucide="arrow-right"></i>
+    <div><span>02</span><i data-lucide="bus-front"></i><b>Choose Bus</b><small>Select a service</small></div><i class="arrow" data-lucide="arrow-right"></i>
+    <div class="active"><span>03</span><i data-lucide="sparkles"></i><b>Smart Allocation</b><small>Complete trip coverage</small></div><i class="arrow" data-lucide="arrow-right"></i>
+    <div><span>04</span><i data-lucide="user-round"></i><b>Passenger</b><small>Enter details</small></div><i class="arrow" data-lucide="arrow-right"></i>
+    <div><span>05</span><i data-lucide="credit-card"></i><b>Payment</b><small>Confirm booking</small></div><i class="arrow" data-lucide="arrow-right"></i>
+    <div><span>06</span><i data-lucide="ticket-check"></i><b>Ticket</b><small>Ready to travel</small></div>
+  </div>
+</section>
+
+<section class="section faq" id="faq">
+  <div class="faq-title"><div><div class="section-label">07 / FAQ</div><h2>Questions, answered<br><span>clearly.</span></h2></div><p>A concise explanation of the Smart Segment experience.</p></div>
+  <div class="faq-card">
+    <button class="faq-q open" aria-expanded="true"><span>What is Smart Segment?</span><i data-lucide="chevron-down"></i></button><div class="faq-a">Smart Segment is a journey-aware seat allocation concept that can divide one passenger’s complete journey into consecutive segments and combine available seats to cover the entire trip when one seat is not available throughout.</div>
+    <button class="faq-q" aria-expanded="false"><span>How is it different from normal seat selection?</span><i data-lucide="chevron-down"></i></button><div class="faq-a">Normal seat selection generally looks for one seat covering the requested trip. Smart Segment can instead evaluate consecutive seat segments and build a complete allocation when a single seat cannot cover the journey.</div>
+    <button class="faq-q" aria-expanded="false"><span>Does it replace the normal booking process?</span><i data-lucide="chevron-down"></i></button><div class="faq-a">No. It fits into the existing journey: search, choose a bus, apply smart allocation, enter passenger details, pay and receive the ticket.</div>
+    <button class="faq-q" aria-expanded="false"><span>Can passengers still select their own seat?</span><i data-lucide="chevron-down"></i></button><div class="faq-a">Yes. The passenger can be shown the allocation clearly and can still use the seat map according to the booking rules. The important difference is that each allocated seat is tied to a specific journey segment.</div>
+    <button class="faq-q" aria-expanded="false"><span>What happens when a passenger must change seats?</span><i data-lucide="chevron-down"></i></button><div class="faq-a">The interface should clearly show the exact segment covered by each seat and the point where the passenger changes seats. A valid Smart Segment allocation must cover the journey continuously from boarding to destination.</div>
+  </div>
+</section>
+
+<section class="cta"><div class="cta-inner"><div class="section-label light">SMARTER BUS RESERVATIONS</div><h2>Make every seat decision<br><span>journey-aware.</span></h2><p>Turn route context into a clearer, smarter reservation experience.</p><a href="#booking">Explore Smart Segment <i data-lucide="arrow-right"></i></a></div></section>
+</main>
+
+<footer><div class="footer-brand"><span class="brand-symbol"><i data-lucide="bus-front"></i></span><b>SMART <em>SEGMENT</em></b></div><div class="footer-links"><a href="#how">How It Works</a><a href="#comparison">Comparison</a><a href="#faq">FAQ</a></div><span>© 2026 Smart Segment</span></footer>
+<script src="app.js"></script>
+</body>
+</html>

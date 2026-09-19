@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Payment Confirmation | Smart Segment</title>
+<link rel="stylesheet" href="../user.css"><link rel="stylesheet" href="payment.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script>if(new URLSearchParams(location.search).get("embedded")==="1")document.documentElement.classList.add("embedded");</script><script>(function(){
+ if(window.top!==window.self){
+   document.documentElement.classList.add("embedded");
+   function applyTheme(t){if(t)document.documentElement.dataset.theme=t}
+   try{applyTheme(localStorage.getItem("smartSegmentTheme")||"light")}catch(e){}
+   window.addEventListener("message",function(e){if(e.data&&e.data.type==="theme")applyTheme(e.data.theme)});
+   window.addEventListener("DOMContentLoaded",function(){
+     // Intercept only navigation links. Buttons keep their existing behavior.
+     document.querySelectorAll('a[href]').forEach(function(a){
+       if(a.dataset.smartFrameBound)return;a.dataset.smartFrameBound="1";
+       a.addEventListener("click",function(ev){
+         const href=a.getAttribute("href");if(!href||href==="#"||/^https?:|^mailto:/i.test(href))return;
+         ev.preventDefault();
+         const u=new URL(href,location.href);u.searchParams.set("embedded","1");
+         parent.postMessage({type:"navigateFrame",url:u.href,title:(document.title||"").replace("Smart Segment — ","").replace(" | Smart Segment","")},"*");
+       });
+     });
+   });
+ }
+})();</script><style>
+html.embedded .app-header,
+html.embedded .global-header,
+html.embedded .site-header,
+html.embedded .topbar,
+html.embedded .global-topbar,
+html.embedded .global-sidebar{display:none!important}
+html.embedded body>.app-layout>aside,
+html.embedded body>.shell>aside{display:none!important}
+html.embedded .app-layout>.main,
+html.embedded body>.app-layout>main,
+html.embedded .shell>.main{margin:0!important;width:100%!important;max-width:none!important}
+html.embedded .app-layout{display:block!important;min-height:0!important}
+
+html.embedded [data-theme-toggle],
+html.embedded #theme,
+html.embedded #themeToggle,
+html.embedded .theme-toggle,
+html.embedded .header-theme{display:none!important}
+</style><style>
+html[data-theme="dark"] body{background:var(--bg,#080b10)!important;color:var(--text,#f5f7fa)!important}
+html[data-theme="dark"] .card,html[data-theme="dark"] .panel,html[data-theme="dark"] .bus-card,
+html[data-theme="dark"] .seat-layout,html[data-theme="dark"] .stop-card,html[data-theme="dark"] .payment-method,
+html[data-theme="dark"] .booking-ticket{background:var(--surface,#10141b)!important;border-color:var(--border,#2b3440)!important;color:var(--text,#f5f7fa)!important}
+</style>
+<style id="dashboard-embedded-style">
+html.embedded .main{padding:40px!important;box-sizing:border-box!important}
+
+html.embedded .header,
+html.embedded .topbar,
+html.embedded .app-header,
+html.embedded .top,
+html.embedded .global-header,
+html.embedded .site-header { display:none !important; }
+html.embedded body { padding-top:0 !important; }
+</style>
+<link rel="stylesheet" href="../../auth/shared/css/ui-polish.css"><style>
+#verification{position:fixed;inset:0;z-index:1000;margin:0!important;padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(10,18,35,.42);backdrop-filter:blur(3px);border:0!important;border-radius:0!important;box-shadow:none!important}
+#verification[hidden]{display:none!important}
+#verification>*{width:min(100%,520px)}
+#verification .verification-icon,#verification h2,#verification .section-description,#verification .otp,#verification .verification-actions{max-width:520px}
+.verification-open{overflow:hidden}
+#verification .verification-icon{margin-inline:auto}
+</style>
+
+</head><body>
+<header class="app-header"><a class="brand" href="../dashboard/index.html"><span class="brand-mark"><i class="fa-solid fa-bus"></i></span>Smart Segment</a><div class="header-actions"><button class="icon-button" data-theme-toggle aria-label="Change theme"><i data-theme-icon></i></button><button class="profile-button"><span class="avatar">U</span><span>User</span><i class="fa-solid fa-chevron-down"></i></button></div></header>
+<div class="app-layout"><aside class="sidebar"><div class="nav-label">Main</div><a class="nav-item" href="../dashboard/index.html"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></a><a class="nav-item" href="../booking-confirmation/booking-confirmation.html"><i class="fa-solid fa-ticket"></i><span>My Bookings</span></a><a class="nav-item" href="#"><i class="fa-solid fa-user"></i><span>Profile</span></a><div class="nav-label">Account</div><a class="nav-item" href="../../auth/auth/login/login.html" onclick="try{SmartSegmentAPI.clearSession();sessionStorage.clear()}catch(e){};location.replace(this.href);return false;"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a></aside>
+<main class="main"><div class="container"><div class="flow"><span class="flow-step done">✓ Search</span><span class="flow-line"></span><span class="flow-step done">✓ Stops</span><span class="flow-line"></span><span class="flow-step done">✓ Seat</span><span class="flow-line"></span><span class="flow-step done">✓ Passenger</span><span class="flow-line"></span><span class="flow-step active">5. Payment</span></div>
+<div class="page-header"><div><h1>Payment Confirmation</h1><p>Review your booking and securely confirm the payment.</p></div></div>
+<div class="payment-grid"><section class="card section"><div class="section-heading"><div><h2 class="section-title">Payment Method</h2><p class="section-description">Choose how you want to pay.</p></div><span class="secure-chip"><i class="fa-solid fa-shield-halved"></i> Secure</span></div>
+<div class="payment-methods"><button class="payment-method active" type="button"><i class="fa-solid fa-qrcode"></i><span><b>UPI</b><small>Instant payment</small></span></button><button class="payment-method" type="button"><i class="fa-regular fa-credit-card"></i><span><b>Card</b><small>Debit or credit card</small></span></button><button class="payment-method" type="button"><i class="fa-solid fa-building-columns"></i><span><b>Net Banking</b><small>Bank transfer</small></span></button></div>
+</section>
+<aside class="card section"><h2 class="section-title">Fare Summary</h2><p class="section-description">Final amount comes from the selected journey.</p><div class="fare-summary"><div><span>Base Fare</span><strong>₹—</strong></div><div><span>Taxes / Fees</span><strong>₹—</strong></div><div class="total"><span>Total</span><strong>₹—</strong></div></div><div class="empty compact"><i class="fa-solid fa-receipt"></i><span>Fare details will appear after booking data is loaded.</span></div></aside></div>
+<div class="payment-actions"><a class="btn" href="../passenger-details/passenger-details.html">← Back</a><button class="btn primary" id="continuePayment">Continue to Payment <i class="fa-solid fa-arrow-right"></i></button></div>
+<section class="card section verification" id="verification" hidden><div class="verification-icon"><i class="fa-solid fa-shield-halved"></i></div><h2 class="section-title">Confirm Payment</h2><p class="section-description">Enter your payment verification code to continue.</p><div class="otp" aria-label="Verification code"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"></div><div class="verification-actions"><button class="btn" id="cancelVerify">Cancel</button><button class="btn primary" id="verifyPay">Verify & Pay</button></div></section>
+</div></main></div><div class="toast"></div><script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/theme.js"></script><script src="../../auth/shared/js/ui.js"></script><script src="payment.js?v=2"></script>
+<script src="../../auth/shared/js/embedded.js"></script></body></html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Segment — Bus Search</title>
+<link rel="stylesheet" href="bus-search.css">
+<script>(function(){
+ if(window.top!==window.self){
+   document.documentElement.classList.add("embedded");
+   function applyTheme(t){if(t)document.documentElement.dataset.theme=t}
+   try{applyTheme(localStorage.getItem("smartSegmentTheme")||"light")}catch(e){}
+   window.addEventListener("message",function(e){if(e.data&&e.data.type==="theme")applyTheme(e.data.theme)});
+   window.addEventListener("DOMContentLoaded",function(){
+     // Intercept only navigation links. Buttons keep their existing behavior.
+     document.querySelectorAll('a[href]').forEach(function(a){
+       if(a.dataset.smartFrameBound)return;a.dataset.smartFrameBound="1";
+       a.addEventListener("click",function(ev){
+         const href=a.getAttribute("href");if(!href||href==="#"||/^https?:|^mailto:/i.test(href))return;
+         ev.preventDefault();
+         const u=new URL(href,location.href);u.searchParams.set("embedded","1");
+         parent.postMessage({type:"navigateFrame",url:u.href,title:(document.title||"").replace("Smart Segment — ","").replace(" | Smart Segment","")},"*");
+       });
+     });
+   });
+ }
+})();</script><style>
+html.embedded .app-header,
+html.embedded .top,
+html.embedded .global-header,
+html.embedded .site-header,
+html.embedded .topbar,
+html.embedded .global-topbar,
+html.embedded .global-sidebar{display:none!important}
+html.embedded body>.app-layout>aside,
+html.embedded body>.shell>aside{display:none!important}
+html.embedded .app-layout>.main,
+html.embedded body>.app-layout>main,
+html.embedded .shell>.main{margin:0!important;width:100%!important;max-width:none!important}
+html.embedded .app-layout{display:block!important;min-height:0!important}
+
+html.embedded [data-theme-toggle],
+html.embedded #theme,
+html.embedded #themeToggle,
+html.embedded .theme-toggle,
+html.embedded .header-theme{display:none!important}
+</style><style>
+html[data-theme="dark"] body{background:var(--bg,#080b10)!important;color:var(--text,#f5f7fa)!important}
+html[data-theme="dark"] .card,html[data-theme="dark"] .panel,html[data-theme="dark"] .bus-card,
+html[data-theme="dark"] .seat-layout,html[data-theme="dark"] .stop-card,html[data-theme="dark"] .payment-method,
+html[data-theme="dark"] .booking-ticket{background:var(--surface,#10141b)!important;border-color:var(--border,#2b3440)!important;color:var(--text,#f5f7fa)!important}
+</style><link rel="stylesheet" href="../../auth/shared/css/ui-polish.css">
+<style>html.embedded .main{padding:40px!important;box-sizing:border-box!important}
+</style></head>
+<body>
+<div class="shell">
+<header class="top">
+  <div class="brand"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 16V7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5V16M5 12h14M8 18h.01M16 18h.01M7 16v3m10-3v3"/><path d="M8 5V3.5h8V5"/></svg></div><div><b>SMART SEGMENT</b><small>Journey intelligence</small></div></div>
+  <div class="top-actions">
+    <button class="theme" id="theme" aria-label="Change theme">☾</button>
+    <button class="profile" id="profile"><span>M</span><div><b>Mahesh</b><small>Passenger</small></div>⌄</button>
+  </div>
+</header>
+
+<main>
+  <section class="heading">
+    <div>
+      <div class="eyebrow"><i></i> SMART SEGMENT · BUS SEARCH</div>
+      <h1>Choose the right bus<br><span>for your journey.</span></h1>
+      <p>Compare services, departure times, available seats and fares in one clear view.</p>
+    </div>
+    <button class="modify" id="modify"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Modify search</button>
+  </section>
+
+  <section class="search-bar">
+    <div class="stop"><small>FROM</small><strong id="from">—</strong><span>Boarding stop</span></div>
+    <div class="arrow"><b>→</b></div>
+    <div class="stop"><small>TO</small><strong id="to">—</strong><span>Destination</span></div>
+    <div class="date"><small>TRAVEL DATE</small><strong id="date">30 Aug 2026</strong><span>Sunday</span></div>
+    <button id="edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6 4 4M4 20l4.5-1 9-9a2.1 2.1 0 0 0-3-3l-9 9L4 20Z"/></svg> Edit</button>
+  </section>
+
+  <section class="toolbar">
+    <div><strong><span id="count">4</span> buses found</strong><small>Best available services for your selected route</small></div>
+    <label>Sort by <select id="sort"><option value="recommended">Recommended</option><option value="departure">Earliest departure</option><option value="fare">Lowest fare</option><option value="seats">Most seats</option></select></label>
+  </section>
+
+  <section id="results" class="results"></section>
+
+  <section class="tip"><b>✦</b><div><strong>Smart Segment</strong><span>Pick your service first. You can review the exact seat layout in the next step.</span></div></section>
+</main>
+</div>
+<script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script src="bus-search.js"></script>
+</body>
+</html>

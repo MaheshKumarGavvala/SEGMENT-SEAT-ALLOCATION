@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Segment — Choose your seat</title>
+<script>
+(() => {
+  try { document.documentElement.dataset.theme = localStorage.getItem("smartSegmentTheme") === "dark" ? "dark" : "light"; }
+  catch { document.documentElement.dataset.theme = "light"; }
+})();
+</script>
+<style>html{visibility:hidden}html[data-theme]{visibility:visible}</style>
+<link rel="stylesheet" href="seat-selection.css">
+<script>(function(){
+ if(window.top!==window.self){
+  document.documentElement.classList.add("embedded");
+  try{document.documentElement.dataset.theme=localStorage.getItem("smartSegmentTheme")||"light"}catch(e){}
+  window.addEventListener("message",function(e){if(e.data&&e.data.type==="theme")document.documentElement.dataset.theme=e.data.theme});
+ }
+})();</script>
+<style id="dashboard-embedded-style">
+html.embedded .main{padding:40px!important;box-sizing:border-box!important}
+
+html.embedded .header,
+html.embedded .topbar,
+html.embedded .app-header,
+html.embedded .top,
+html.embedded .global-header,
+html.embedded .site-header { display:none !important; }
+html.embedded body { padding-top:0 !important; }
+</style>
+<link rel="stylesheet" href="../../auth/shared/css/ui-polish.css">
+</head>
+<body>
+<header class="header">
+  <a class="brand" href="../dashboard/index.html" id="brandLink">
+    <span class="brand-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M6 5.5h12a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2Z"/><path d="M6 9h12"/><path d="M7.5 17v2M16.5 17v2"/><circle cx="8" cy="14" r="1"/><circle cx="16" cy="14" r="1"/></svg>
+    </span>
+    <span class="brand-text"><strong>Smart Segment</strong><small>Intelligent bus reservation</small></span>
+  </a>
+  <div class="header-right">
+    <a class="header-link" href="../dashboard/index.html" id="homeLink"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-7h6v7"/></svg>Home</a>
+    <div class="divider"></div>
+    <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Switch to dark theme" title="Switch theme">
+      <span class="theme-icon theme-sun" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></span>
+      <span class="theme-icon theme-moon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></svg></span>
+      <span class="theme-knob" aria-hidden="true"></span>
+    </button>
+    <button class="account" type="button" id="accountBtn"><span class="avatar">M</span><span class="account-name">Mahesh</span><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>BOOKING</span><b>03 / 05</b></div>
+    <div class="progress"><i></i></div>
+    <div class="progress-steps"><span>Search</span><span>Bus</span><strong>Seat</strong><span>Passenger</span><span>Payment</span></div>
+  </div>
+
+  <section class="hero-row">
+    <div>
+      <div class="breadcrumb"><span>Booking</span><b>/</b><strong>Seat selection</strong></div>
+      <h1>Choose your seat</h1>
+      <p class="subtitle">Pick the seat that works best for your journey. Your selection is reserved while you complete the next step.</p>
+    </div>
+    <div class="live-status"><span></span>Live availability</div>
+  </section>
+
+  <section class="trip-card">
+    <div class="trip-main">
+      <div class="location"><small>BOARDING</small><strong id="fromStop">—</strong><span>Starting point</span></div>
+      <div class="trip-line"><span></span><i></i><span></span><b>Complete journey</b></div>
+      <div class="location"><small>DESTINATION</small><strong id="toStop">—</strong><span>Final stop</span></div>
+    </div>
+    <div class="trip-meta">
+      <div><small>SERVICE</small><strong id="busName">Selected bus</strong><span id="busType">Selected service</span></div>
+      <div><small>TRAVEL DATE</small><strong id="journeyDate">30 Aug 2026</strong><span>Confirmed travel date</span></div>
+      <div><small>FARE</small><strong id="fare">₹680</strong><span>Per passenger</span></div>
+    </div>
+  </section>
+
+  <div class="content-grid">
+    <section class="seat-panel">
+      <div class="panel-head">
+        <div><div class="eyebrow">SEAT MAP</div><h2>Find your preferred seat</h2><p>Tap a seat to select it. Select another seat to switch.</p></div>
+        <div class="map-tools">
+          <button class="tool active" data-filter="all" type="button">All</button>
+          <button class="tool" data-filter="window" type="button">Window</button>
+          <button class="tool" data-filter="aisle" type="button">Aisle</button>
+        </div>
+      </div>
+
+      <div class="availability-strip">
+        <div><span class="dot available-dot"></span><b id="availableCount">24</b><small>available</small></div>
+        <div><span class="dot occupied-dot"></span><b id="occupiedCount">6</b><small>occupied</small></div>
+        <div><span class="dot selected-dot"></span><b id="selectedCount">0</b><small>selected</small></div>
+        <div class="map-note">Prices shown are per passenger</div>
+      </div>
+
+      <div class="bus-wrap">
+        <div class="bus" aria-label="Bus seat map">
+      <div class="bus-front">
+        <div class="windshield"><span>FRONT</span><small>Panoramic view</small></div>
+        <div class="driver"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l5 3"/></svg><span>Driver</span></div>
+      </div>
+      <div class="deck-bar"><span>LOWER DECK</span><b>2 + 2 SEATING · CENTRAL AISLE</b><span class="door-pill">ENTRY</span></div>
+      <div class="seat-map-head"><span>WINDOW</span><span>WINDOW</span><i></i><span>WINDOW</span><span>WINDOW</span></div>
+      <div class="seat-grid" id="seatGrid"></div>
+      <div class="rear"><span>REAR</span><i></i><span>EMERGENCY EXIT</span></div>
+    </div>
+  </div>
+  <div class="legend">
+        <span><i class="available"></i>Available</span>
+        <span><i class="selected"></i>Selected</span>
+        <span><i class="occupied"></i>Occupied</span>
+        <span><i class="window"></i>Window</span>
+      </div>
+
+      <div class="seat-help">
+        <span class="help-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6"/><path d="M12 7h.01"/></svg></span>
+        <div><strong>One seat covers the complete journey</strong><p>Need to change seats during the trip? Use <b>Segment Seat Selection</b> for consecutive seat segments.</p></div>
+      </div>
+    </section>
+
+    <aside class="summary-panel">
+      <div class="summary-head">
+        <div><div class="eyebrow">YOUR SELECTION</div><h2 id="selectionTitle">No seat selected</h2></div>
+        <span class="selection-badge" id="selectionBadge">0</span>
+      </div>
+
+      <div class="selected-preview" id="selectedPreview">
+        <div class="preview-empty"><div class="preview-seat-icon">+</div><strong>Choose a seat</strong><span>Your seat details will appear here</span></div>
+      </div>
+
+      <div class="details-list" id="seatDetails" hidden>
+        <div><span>Seat</span><b id="detailSeat">—</b></div>
+        <div><span>Position</span><b id="detailPosition">—</b></div>
+        <div><span>Deck</span><b>Lower deck</b></div>
+      </div>
+
+      <div class="summary-total"><span>Total seat fare</span><strong id="totalFare">₹680</strong></div>
+
+      <button class="continue-btn" id="continueBtn" type="button" disabled>
+        Continue to passenger details
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </button>
+      <button class="clear-btn" id="clearBtn" type="button" hidden>Clear selection</button>
+
+
+
+      <div class="secure-note"><svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M12 14v3"/></svg><span>Secure selection · You can change your seat before continuing.</span></div>
+    </aside>
+  </div>
+
+  <section class="segment-info">
+    <div class="segment-copy"><div class="eyebrow">NEED MORE FLEXIBILITY?</div><h2>One journey. Multiple seat segments.</h2><p>If one seat is not available for your complete route, Smart Segment can combine consecutive seat segments for the same passenger.</p></div>
+    <button class="segment-large" id="segmentLarge" type="button"><span class="segment-large-icon">↗</span><span><strong>Choose Another Segment</strong><small>Use consecutive seats when one seat cannot cover the complete journey</small></span><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
+  </section>
+
+  <footer><span>Smart Segment · Intelligent bus reservation</span><span>Seat selection · Step 3 of 5</span></footer>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script src="seat-selection.js"></script>
+</body>
+</html>

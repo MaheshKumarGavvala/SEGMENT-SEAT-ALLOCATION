@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Booking Confirmation</title>
+
+<link rel="stylesheet" href="../user.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script>if(new URLSearchParams(location.search).get("embedded")==="1")document.documentElement.classList.add("embedded");</script><link rel="stylesheet" href="booking-confirmation.css"><script>(function(){
+ if(window.top!==window.self){
+   document.documentElement.classList.add("embedded");
+   function applyTheme(t){if(t)document.documentElement.dataset.theme=t}
+   try{applyTheme(localStorage.getItem("smartSegmentTheme")||"light")}catch(e){}
+   window.addEventListener("message",function(e){if(e.data&&e.data.type==="theme")applyTheme(e.data.theme)});
+   window.addEventListener("DOMContentLoaded",function(){
+     // Intercept only navigation links. Buttons keep their existing behavior.
+     document.querySelectorAll('a[href]').forEach(function(a){
+       if(a.dataset.smartFrameBound)return;a.dataset.smartFrameBound="1";
+       a.addEventListener("click",function(ev){
+         const href=a.getAttribute("href");if(!href||href==="#"||/^https?:|^mailto:/i.test(href))return;
+         ev.preventDefault();
+         const u=new URL(href,location.href);u.searchParams.set("embedded","1");
+         parent.postMessage({type:"navigateFrame",url:u.href,title:(document.title||"").replace("Smart Segment — ","").replace(" | Smart Segment","")},"*");
+       });
+     });
+   });
+ }
+})();</script><style>
+html.embedded .app-header,
+html.embedded .global-header,
+html.embedded .site-header,
+html.embedded .topbar,
+html.embedded .global-topbar,
+html.embedded .global-sidebar{display:none!important}
+html.embedded body>.app-layout>aside,
+html.embedded body>.shell>aside{display:none!important}
+html.embedded .app-layout>.main,
+html.embedded body>.app-layout>main,
+html.embedded .shell>.main{margin:0!important;width:100%!important;max-width:none!important}
+html.embedded .app-layout{display:block!important;min-height:0!important}
+
+html.embedded [data-theme-toggle],
+html.embedded #theme,
+html.embedded #themeToggle,
+html.embedded .theme-toggle,
+html.embedded .header-theme{display:none!important}
+</style><style>
+html[data-theme="dark"] body{background:var(--bg,#080b10)!important;color:var(--text,#f5f7fa)!important}
+html[data-theme="dark"] .card,html[data-theme="dark"] .panel,html[data-theme="dark"] .bus-card,
+html[data-theme="dark"] .seat-layout,html[data-theme="dark"] .stop-card,html[data-theme="dark"] .payment-method,
+html[data-theme="dark"] .booking-ticket{background:var(--surface,#10141b)!important;border-color:var(--border,#2b3440)!important;color:var(--text,#f5f7fa)!important}
+</style>
+<style id="dashboard-embedded-style">
+html.embedded .main{padding:40px!important;box-sizing:border-box!important}
+
+html.embedded .header,
+html.embedded .topbar,
+html.embedded .app-header,
+html.embedded .top,
+html.embedded .global-header,
+html.embedded .site-header { display:none !important; }
+html.embedded body { padding-top:0 !important; }
+</style>
+<link rel="stylesheet" href="../../auth/shared/css/ui-polish.css">
+</head><body>
+<header class="app-header"><a class="brand" href="../dashboard/index.html"><span class="brand-mark"><i class="fa-solid fa-bus"></i></span>Smart Segment</a>
+<div class="header-actions"><button class="icon-button" data-theme-toggle title="Change theme" aria-label="Change theme"><i data-theme-icon></i></button>
+<button class="profile-button" onclick="showToast('Profile menu opened.')" aria-label="Open profile menu"><span class="avatar">U</span><span>User</span><i class="fa-solid fa-chevron-down"></i></button></div></header>
+<div class="app-layout"><aside class="sidebar"><div class="nav-label">Main</div><a class="nav-item " href="../dashboard/index.html"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></a><a class="nav-item active" href="../booking-confirmation/booking-confirmation.html"><i class="fa-solid fa-ticket"></i><span>My Bookings</span></a><a class="nav-item " href="#" onclick="showToast('This section is ready for its page workflow.');return false"><i class="fa-solid fa-user"></i><span>Profile</span></a><a class="nav-item " href="#" onclick="showToast('This section is ready for its page workflow.');return false"><i class="fa-solid fa-gear"></i><span>Settings</span></a><div class="nav-label">Account</div><a class="nav-item" href="../../auth/auth/login/login.html" onclick="try{SmartSegmentAPI.clearSession();sessionStorage.clear()}catch(e){};location.replace(this.href);return false;"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a></aside><main class="main">
+<div class="container"><div class="page-header"><div><h1>Booking Confirmation</h1><p>Your completed journey details are shown here.</p></div></div>
+<section class="card section"><div class="empty"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i><strong>Booking confirmed</strong><span>Your booking ID, passenger, boarding point, destination, segment, seat, fare and payment details will appear here.</span></div>
+<div style="display:flex;justify-content:center;gap:10px"><button class="btn" onclick="window.print()">Print Ticket</button><button class="btn">Download Ticket</button><a class="btn primary" href="../dashboard/index.html">Go to Dashboard</a></div></section></div>
+</main></div>
+<div class="toast"></div>
+<script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/theme.js"></script><script src="../../auth/shared/js/ui.js"></script><script src="../../auth/shared/js/modal.js"></script><script src="../../auth/shared/js/validation.js"></script>
+<script src="booking-confirmation.js?v=2"></script><script src="../../auth/shared/js/embedded.js"></script></body></html>

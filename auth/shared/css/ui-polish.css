@@ -1,0 +1,39 @@
+/* Smart Segment UI polish — shared visual layer */
+:root{--ease-smooth:cubic-bezier(.2,.75,.25,1);--ease-spring:cubic-bezier(.18,.9,.25,1.15)}
+html{scroll-behavior:smooth}
+body{animation:ss-page-in .45s var(--ease-smooth) both}
+@keyframes ss-page-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes ss-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes ss-pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--blue,#2166e9) 0%,transparent)}50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--blue,#2166e9) 9%,transparent)}}
+@keyframes ss-shimmer{0%{background-position:120% 0}100%{background-position:-120% 0}}
+button,.btn,a,.nav-item,.nav-link,.card,.panel,.bus-card,.seat-layout,.seat,.payment-method,.quick-card,.journey,.action-icon,.choose,.submit,.search-btn{transition:transform .22s var(--ease-smooth),box-shadow .22s var(--ease-smooth),border-color .22s ease,background-color .22s ease,color .22s ease,opacity .22s ease}
+button:active,.btn:active,.choose:active,.submit:active,.search-btn:active{transform:scale(.985)}
+.card,.panel,.bus-card,.seat-layout,.payment-method,.booking-ticket,.quick-card{will-change:transform;animation:ss-rise .5s var(--ease-smooth) both}
+.card:hover,.panel:hover,.bus-card:hover,.payment-method:hover,.quick-card:hover{transform:translateY(-3px)}
+input,select,textarea{transition:border-color .2s ease,box-shadow .2s ease,background-color .2s ease,transform .2s ease}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px color-mix(in srgb,var(--blue,#2166e9) 11%,transparent);transform:translateY(-1px)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid color-mix(in srgb,var(--blue,#2166e9) 22%,transparent);outline-offset:3px}
+.status-chip,.live,.live-badge,.online,.availability,.live-status{animation:ss-pulse 2.8s ease-in-out infinite}
+.nav-item:hover i,.nav-item:hover svg,.nav-link:hover svg,.header-link:hover svg,.icon-button:hover i{transform:scale(1.08)}
+.nav-item i,.nav-item svg,.nav-link svg,.header-link svg,.icon-button i{transition:transform .2s var(--ease-spring)}
+/* Better buttons */
+.btn.primary,.choose,.continue,.submit,.search-btn{position:relative;overflow:hidden}
+.btn.primary::after,.choose::after,.continue::after,.submit::after,.search-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.18) 48%,transparent 70%);background-size:220% 100%;transform:translateX(-100%);transition:transform .6s ease;pointer-events:none}
+.btn.primary:hover::after,.choose:hover::after,.continue:hover::after,.submit:hover::after,.search-btn:hover::after{transform:translateX(100%)}
+/* Softer cards and clearer section hierarchy */
+.section-heading,.card-heading,.panel-head,.map-head,.right-head{position:relative}
+.section-heading::after,.card-heading::after{content:"";display:block;width:38px;height:3px;border-radius:999px;background:var(--blue,#2166e9);opacity:.65;margin-top:10px}
+/* Icon containers */
+.icon-button,.action-icon,.quick-icon,.route-badge,.op-logo,.brand-mark,.brand-icon,.account-brand-mark,.verification-icon,.feature-icon{transition:transform .25s var(--ease-spring),box-shadow .25s ease}
+.icon-button:hover,.action-icon:hover,.quick-icon:hover,.route-badge:hover,.op-logo:hover,.brand-mark:hover,.brand-icon:hover,.account-brand-mark:hover,.verification-icon:hover,.feature-icon:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 10px 24px color-mix(in srgb,var(--blue,#2166e9) 14%,transparent)}
+/* Seat interaction */
+.seat:not(:disabled):hover .seat-body{transform:translateY(-4px) scale(1.035)}
+.seat.selected .seat-body{animation:ss-seat-pop .28s var(--ease-spring) both}
+@keyframes ss-seat-pop{from{transform:scale(.9)}to{transform:scale(1.02)}}
+/* Lists enter in a calm stagger */
+.results>*:nth-child(2),.journeys>*:nth-child(2),.segments-list>*:nth-child(2),.actions>*:nth-child(2){animation-delay:.05s}
+.results>*:nth-child(3),.journeys>*:nth-child(3),.segments-list>*:nth-child(3),.actions>*:nth-child(3){animation-delay:.1s}
+.results>*:nth-child(4),.journeys>*:nth-child(4),.segments-list>*:nth-child(4),.actions>*:nth-child(4){animation-delay:.15s}
+/* Keep embedded pages visually clean */
+html.embedded body{animation:none}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.card:hover,.panel:hover,.bus-card:hover,.payment-method:hover,.quick-card:hover{transform:none}}

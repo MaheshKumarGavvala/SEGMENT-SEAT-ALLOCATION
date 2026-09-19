@@ -1,0 +1,9 @@
+Issue 1 – dynamic admin stop suggestions
+
+Fixed:
+- Passenger dashboard fetches /api/stops directly from the same localhost origin.
+- Adds a cache-busting query and cache:no-store so newly added stops are fetched immediately.
+- Stop loading is retried when the Boarding Stop/Destination field receives focus.
+- The dashboard shows a clear message if the stop list is empty or the API fails.
+- HTML files are served with Cache-Control: no-store to prevent stale dashboard JavaScript/HTML during local development.
+- Existing Node.js + MySQL backend is retained.

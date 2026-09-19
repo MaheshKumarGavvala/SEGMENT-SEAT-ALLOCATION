@@ -1,0 +1,1 @@
+/* Smart Segment shared validation hooks. */
