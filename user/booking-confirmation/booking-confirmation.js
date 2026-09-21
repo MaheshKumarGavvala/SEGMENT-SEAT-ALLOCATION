@@ -12,7 +12,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function passengerLines(b){
-    return (b.passengers||[]).map(p=>`<div class="detail-row"><span>Seat ${esc(p.seat_number)}</span><strong>${esc(p.full_name||'—')}</strong></div>`).join('') || '<div class="detail-row"><span>Passenger</span><strong>—</strong></div>';
+    return (b.passengers||[]).map(p=>{
+      const from=p.from_stop?.name;
+      const to=p.to_stop?.name;
+      const segment=from&&to ? ` — ${esc(from)} → ${esc(to)}` : '';
+      return `<div class="detail-row"><span>Seat ${esc(p.seat_number)}${segment}</span><strong>${esc(p.full_name||'—')}</strong></div>`;
+    }).join('') || '<div class="detail-row"><span>Passenger</span><strong>—</strong></div>';
   }
 
   function ticketHtml(b){
