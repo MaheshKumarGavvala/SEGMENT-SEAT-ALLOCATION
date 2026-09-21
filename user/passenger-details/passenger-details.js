@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded",()=>{
  const [name,age,gender,mobile,email,idProof,idProofNumber]=inputs;
  name?.addEventListener('input',()=>name.value=name.value.toUpperCase());
  idProofNumber?.addEventListener('input',()=>idProofNumber.value=idProofNumber.value.toUpperCase());
+ mobile?.addEventListener('input',()=>{ mobile.value=mobile.value.replace(/\D/g,'').slice(0,10); });
  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
  const savePassengerDraft=()=>{
    try{
