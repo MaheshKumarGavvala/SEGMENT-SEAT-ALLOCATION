@@ -30,7 +30,7 @@ html.embedded body { padding-top:0 !important; }
 <body>
 <header class="topbar">
  <a class="brand" href="#" id="brandHome"><span class="brand-logo"><span></span></span><span><b>SMART SEGMENT</b><small>Journey intelligence</small></span></a>
- <div class="top-actions"><button class="theme-btn" id="theme">☾</button><button class="profile"><span class="avatar">M</span><span class="profile-copy"><b>Mahesh</b><small>Passenger</small></span><span>⌄</span></button></div>
+ <div class="top-actions"><button class="theme-btn" id="theme">☾</button><button class="profile"><span class="avatar">P</span><span class="profile-copy"><b>Passenger</b><small>Passenger</small></span><span>⌄</span></button></div>
 </header>
 <main>
  <div class="progress"><div class="step done"><b>01</b><span>Search</span></div><i></i><div class="step done"><b>02</b><span>Stops</span></div><i></i><div class="step active"><b>03</b><span>Stops & Seats</span></div><i></i><div class="step"><b>04</b><span>Passenger</span></div><i></i><div class="step"><b>05</b><span>Payment</span></div></div>
@@ -71,5 +71,14 @@ html.embedded body { padding-top:0 !important; }
   </aside>
  </section>
  <footer><span><b>Smart Segment</b> · Intelligent seat allocation</span><span>Step 3 of 5</span></footer>
-</main><div class="toast" id="toast"></div><script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script src="seat-selection.js"></script>
+</main><div class="toast" id="toast"></div><script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script>
+(() => { try {
+  const session=JSON.parse(localStorage.getItem('smartSegmentSession')||'null');
+  const name=String(session?.name||'Passenger').trim()||'Passenger';
+  const avatar=(name[0]||'P').toUpperCase();
+  document.querySelector('.profile .avatar')?.replaceChildren(document.createTextNode(avatar));
+  const el=document.querySelector('.profile-copy b'); if(el) el.textContent=name;
+} catch(e){} })();
+</script>
+<script src="seat-selection.js"></script>
 </body></html>

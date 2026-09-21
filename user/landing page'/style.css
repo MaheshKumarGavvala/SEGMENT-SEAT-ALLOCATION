@@ -191,3 +191,14 @@ footer{background:#06142c!important}
   .search-field:hover{transform:none}.section:not(.intro):before{left:18px;right:18px}.allocation-demo{border-radius:19px}.feature-card:hover,.benefit-cards article:hover,.flow-line>div:hover{transform:translateY(-5px)}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.hero-image-wrap img{transform:none}.reveal{opacity:1!important;transform:none!important}.route-overlay,.floating-seat{transform:none!important}}
+
+/* Mobile stability: keep the landing page inside the viewport on narrow devices. */
+html,body{max-width:100%;overflow-x:hidden}
+img,svg,video{max-width:100%}
+@media(max-width:800px){
+  .hero-image-wrap,.hero-visual,.hero-content,.search-panel,.section,.comparison,.faq,.cta,.footer{max-width:100%;min-width:0}
+  .hero-image-wrap img{width:100%;height:auto}
+  .search-panel{width:100%}
+  .search-field input{min-width:0;max-width:100%}
+  .mobile-nav{max-height:calc(100vh - 78px);overflow:auto}
+}

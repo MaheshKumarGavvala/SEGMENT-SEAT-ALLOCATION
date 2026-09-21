@@ -65,8 +65,17 @@ async function loadDashboardData(){
       message(stopError.name==='AbortError'?'Stops request timed out. Check that the backend is running.':(stopError.message||'Could not load stops.'),true);
     }
     const name=session.name||'Passenger';
+    const safeName=clean(name);
+    const firstLetter=(String(name).trim().charAt(0)||'P').toUpperCase();
     const heading=document.querySelector('h1');
-    if(heading) heading.textContent=`Good to see you, ${clean(name)}.`;
+    if(heading) heading.textContent=`Good to see you, ${safeName}.`;
+
+    // Keep the dashboard account area in sync with the logged-in user.
+    document.querySelectorAll('#userBtn .avatar, #userMenu .avatar').forEach(el=>{el.textContent=firstLetter;});
+    const accountName=document.querySelector('#userBtn .user-copy b');
+    if(accountName) accountName.textContent=name;
+    const menuName=document.querySelector('#userMenu .user-menu-head b');
+    if(menuName) menuName.textContent=name;
     let bookings=[];
     try{
       const bookingsResponse=await SmartSegmentAPI.get('/api/bookings/mine');

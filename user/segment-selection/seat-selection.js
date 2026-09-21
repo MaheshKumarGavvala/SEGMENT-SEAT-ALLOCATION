@@ -56,21 +56,47 @@ async function selectSeat(n){if(!apiReady||from<0||to<0)return toast('Seat avail
 function renderSummary(){const arr=Object.values(allocations());$('#segmentCount').textContent=arr.length;$('#segmentsList').innerHTML=arr.length?arr.map(x=>`<div class="segment-item"><div class="segment-top"><span class="seat-chip">${esc(x.seat)}</span><div class="segment-route"><b>Seat ${esc(x.seat)}</b><small>${esc(x.fromCode)} → ${esc(x.toCode)}</small></div><button class="remove-segment" data-key="${esc(x.key)}" title="Remove">×</button></div></div>`).join(''):'<div class="empty">Select a seat and its segment will appear here instantly.</div>';$$('.remove-segment').forEach(b=>b.onclick=()=>{const a=allocations();delete a[b.dataset.key];saveAlloc(a);renderAll();if(from>=0&&to>=0)refreshSegmentAvailability();toast('Seat segment removed. The seat is available again.')});const can=isJourneyComplete(arr);$('#continueBtn').disabled=!can;$('#continueBtn').classList.toggle('disabled',!can)}
 function isJourneyComplete(arr){
  if(!arr.length||!stops.length)return false;
- const targetFrom=Number(bus?.fromStopId);
- const targetTo=Number(bus?.toStopId);
+
+ // The required journey is the From/To selected by the user.
+ // Do not rely only on the bus route's endpoint IDs.
+ const matchStop=value=>{
+   if(value==null)return -1;
+   const q=String(value).trim().toLowerCase();
+   if(!q)return -1;
+   return stops.findIndex(s=>[
+     s.id,s.code,s.name,s.city
+   ].some(v=>String(v??'').trim().toLowerCase()===q));
+ };
+
+ let startIndex=matchStop(data.from);
+ let endIndex=matchStop(data.to);
+
+ // Fallback to the selected bus endpoint IDs when the search values
+ // cannot be matched directly to the loaded route stops.
+ if(startIndex<0&&bus?.fromStopId!=null)
+   startIndex=stops.findIndex(s=>Number(s.id)===Number(bus.fromStopId));
+ if(endIndex<0&&bus?.toStopId!=null)
+   endIndex=stops.findIndex(s=>Number(s.id)===Number(bus.toStopId));
+
+ if(startIndex<0||endIndex<0||endIndex<=startIndex)return false;
+
  const sorted=[...arr].sort((a,b)=>Number(a.fromStopIndex)-Number(b.fromStopIndex));
- if(!Number.isInteger(targetFrom)||!Number.isInteger(targetTo))return false;
- const startIndex=stops.findIndex(s=>Number(s.id)===targetFrom);
- const endIndex=stops.findIndex(s=>Number(s.id)===targetTo);
- if(startIndex<0||endIndex<0)return false;
- if(Number(sorted[0].fromStopIndex)!==startIndex||Number(sorted.at(-1).toStopIndex)!==endIndex)return false;
- for(let i=1;i<sorted.length;i++)if(Number(sorted[i].fromStopIndex)!==Number(sorted[i-1].toStopIndex))return false;
+
+ // The selected segments must start at the searched From stop,
+ // end at the searched To stop, and cover the journey continuously.
+ if(Number(sorted[0].fromStopIndex)!==startIndex)return false;
+ if(Number(sorted.at(-1).toStopIndex)!==endIndex)return false;
+
+ for(let i=1;i<sorted.length;i++){
+   if(Number(sorted[i].fromStopIndex)!==Number(sorted[i-1].toStopIndex))return false;
+ }
+
  return true;
 }
 function renderAll(){renderTimeline();updateStopUI();renderSummary();if(!$('#mapCard').hidden&&from>=0&&to>=0)renderSeats()}
 async function init(){
  $('#busName').textContent=bus?.name||'Selected bus';$('#busType').textContent=`${bus?.type||'Bus'} · ${bus?.service||bus?.number||''}`;
- try{const r=await SmartSegmentAPI.get(`/api/routes/${bus?.route?.id}/stops`);stops=r.data||[];if(stops.length<2)throw new Error('Route stops are unavailable.');}catch(e){toast('Could not load route stops from the server.');return}
+ try{const r=await SmartSegmentAPI.get(`/api/routes/${bus?.route?.id}/stops`);const allStops=r.data||[];if(allStops.length<2)throw new Error('Route stops are unavailable.');const wantedFrom=String(data.from||'').trim().toLowerCase(),wantedTo=String(data.to||'').trim().toLowerCase();if(wantedFrom&&wantedTo){const start=allStops.findIndex(s=>String(s.name||'').trim().toLowerCase()===wantedFrom),end=allStops.findIndex(s=>String(s.name||'').trim().toLowerCase()===wantedTo);if(start<0||end<0||end<=start)throw new Error('Searched journey stops are unavailable.');stops=allStops.slice(start,end+1)}else{stops=allStops}}catch(e){toast(e.message||'Could not load route stops from the server.');return}
  renderAll();
 }
 $('#changeSegment').onclick=()=>{from=-1;to=-1;hideMap();renderAll();document.querySelector('.stop-card')?.scrollIntoView({behavior:'smooth',block:'start'});toast('Choose the next journey segment')};$('#clearFrom').onclick=()=>{from=-1;to=-1;hideMap();renderAll()};$('#clearTo').onclick=()=>{to=-1;hideMap();renderAll()};$('#seatGrid').addEventListener('click',e=>{const b=e.target.closest('.seat');if(b&&!b.disabled)selectSeat(Number(b.dataset.seat))});$('#clearAll').onclick=()=>{saveAlloc({});from=-1;to=-1;hideMap();renderAll();toast('All selected seat segments cleared')};

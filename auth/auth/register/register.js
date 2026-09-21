@@ -58,7 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
         name:name.value.trim(), email:email.value.trim(), password:pass.value
       });
       SmartSegmentAPI.setSession(response.data || response);
-      window.location.assign("../../../user/dashboard/index.html");
+      const basePath = location.hostname.endsWith("github.io") ? "/SEGMENT-SEAT-ALLOCATION" : "";
+      window.location.assign(`${basePath}/user/dashboard/index.html`);
     } catch (error) {
       msg.textContent = error.message || "Unable to create the account. Please try again.";
       btn.disabled = false;

@@ -48,7 +48,7 @@ html.embedded body { padding-top:0 !important; }
       <span class="theme-icon theme-moon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></svg></span>
       <span class="theme-knob" aria-hidden="true"></span>
     </button>
-    <button class="account" type="button" id="accountBtn"><span class="avatar">M</span><span class="account-name">Mahesh</span><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></button>
+    <button class="account" type="button" id="accountBtn"><span class="avatar">P</span><span class="account-name">Passenger</span><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></button>
   </div>
 </header>
 
@@ -162,6 +162,15 @@ html.embedded body { padding-top:0 !important; }
   <footer><span>Smart Segment · Intelligent bus reservation</span><span>Seat selection · Step 3 of 5</span></footer>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script src="seat-selection.js"></script>
+<script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script>
+(() => { try {
+  const session=JSON.parse(localStorage.getItem('smartSegmentSession')||'null');
+  const name=String(session?.name||'Passenger').trim()||'Passenger';
+  const avatar=(name[0]||'P').toUpperCase();
+  document.querySelector('.account .avatar')?.replaceChildren(document.createTextNode(avatar));
+  const el=document.querySelector('.account-name'); if(el) el.textContent=name;
+} catch(e){} })();
+</script>
+<script src="seat-selection.js"></script>
 </body>
 </html>

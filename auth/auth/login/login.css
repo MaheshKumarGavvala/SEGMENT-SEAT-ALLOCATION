@@ -131,7 +131,20 @@ form{display:grid;gap:17px}.field{display:grid;gap:8px}.field-label{font-size:11
 .field input[aria-invalid="true"]{border-color:var(--danger);box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 9%,transparent)}
 .field small{display:block;min-height:0;color:var(--danger);font-size:10.5px;line-height:1.35;margin-top:-2px}
 .eye{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:39px;height:39px;border:0;border-radius:10px;background:transparent;color:var(--muted);display:grid;place-items:center}
-.eye:hover{background:var(--soft);color:var(--primary)}.eye svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.eye:hover{background:var(--soft);color:var(--primary)}
+/* Password visibility toggle: keep the button anchored while pressing. */
+.eye,
+.eye:hover,
+.eye:focus,
+.eye:active {
+  transform: translateY(-50%) !important;
+  box-sizing: border-box;
+}
+
+.eye:active {
+  background: var(--soft);
+}
+.eye svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .role-switch{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);transition:background-color .38s,border-color .38s}
 .role-switch button{height:41px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:11.5px;font-weight:750;display:flex;align-items:center;justify-content:center;gap:7px;position:relative;z-index:2}
 .role-switch button.active{background:var(--surface);color:var(--primary);box-shadow:0 4px 13px rgba(16,24,40,.08)}

@@ -58,7 +58,7 @@ html[data-theme="dark"] .booking-ticket{background:var(--surface,#10141b)!import
   <div class="brand"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 16V7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5V16M5 12h14M8 18h.01M16 18h.01M7 16v3m10-3v3"/><path d="M8 5V3.5h8V5"/></svg></div><div><b>SMART SEGMENT</b><small>Journey intelligence</small></div></div>
   <div class="top-actions">
     <button class="theme" id="theme" aria-label="Change theme">☾</button>
-    <button class="profile" id="profile"><span>M</span><div><b>Mahesh</b><small>Passenger</small></div>⌄</button>
+    <button class="profile" id="profile"><span>M</span><div><b>Passenger</b><small>Passenger</small></div>⌄</button>
   </div>
 </header>
 
@@ -90,6 +90,15 @@ html[data-theme="dark"] .booking-ticket{background:var(--surface,#10141b)!import
   <section class="tip"><b>✦</b><div><strong>Smart Segment</strong><span>Pick your service first. You can review the exact seat layout in the next step.</span></div></section>
 </main>
 </div>
-<script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script src="bus-search.js"></script>
+<script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/embedded.js"></script><script>
+(() => { try {
+  const session=JSON.parse(localStorage.getItem('smartSegmentSession')||'null');
+  const name=String(session?.name||'Passenger').trim()||'Passenger';
+  const avatar=(name[0]||'P').toUpperCase();
+  const a=document.querySelector('#profile>span'); if(a) a.textContent=avatar;
+  const b=document.querySelector('#profile b'); if(b) b.textContent=name;
+} catch(e){} })();
+</script>
+<script src="bus-search.js"></script>
 </body>
 </html>
