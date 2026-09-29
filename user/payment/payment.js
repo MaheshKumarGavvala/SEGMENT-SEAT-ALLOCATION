@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded",()=>{
    verification.hidden=false;document.body.classList.add("verification-open");inputs[0]?.focus()
  };
  document.getElementById("cancelVerify").onclick=()=>{verification.hidden=true;document.body.classList.remove("verification-open")};
+ document.getElementById("cancelVerifyText")?.addEventListener("click",()=>document.getElementById("cancelVerify").click());
  document.getElementById("verifyPay").onclick=async()=>{
    const code=inputs.map(x=>x.value).join("");
    if(code.length!==5){showToast("Enter all 5 digits.");return}
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded",()=>{
        sessionStorage.removeItem("normalFromStopId");
        sessionStorage.removeItem("normalToStopId");
        sessionStorage.removeItem("passengerDetails");
-       if(window.parent!==window.self) parent.postMessage({type:"closeFrame",bookingSuccess:true},"*");
+       if(window.parent!==window.self) parent.postMessage({type:"closeFrame",bookingSuccess:true,bookingCode:result?.bookings?.[0]?.booking_code||""},"*");
        else location.href=new URL("../dashboard/index.html",location.href).href;
      } else { throw new Error("Booking service is unavailable. Please return to Bus Search and try again."); }
    }catch(err){

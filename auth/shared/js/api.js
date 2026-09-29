@@ -1,5 +1,16 @@
 window.SmartSegmentAPI = window.SmartSegmentAPI || (() => {
-  const API_BASE = "https://segment-seat-allocation.onrender.com";
+  // Use the local backend when the app is served by the project server.
+  // A hosted backend can still be supplied explicitly for deployed builds.
+  const configuredBase = String(window.SMART_SEGMENT_API_BASE || '').trim().replace(/\/$/, '');
+  const hostname = window.location.hostname;
+  const isLocalHost = ['localhost','127.0.0.1','0.0.0.0'].includes(hostname);
+  const isGitHubPages = hostname.endsWith('.github.io');
+  const sameOriginBase = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
+    ? window.location.origin
+    : '';
+  const localBase = isLocalHost ? 'http://localhost:3000' : '';
+  const hostedBase = isGitHubPages ? 'https://segment-seat-allocation.onrender.com' : sameOriginBase;
+  const API_BASE = configuredBase || localBase || hostedBase || "https://segment-seat-allocation.onrender.com";
   const REQUEST_TIMEOUT_MS = 8000;
   const makeUrl = (url) => /^https?:\/\//i.test(url) ? url : `${API_BASE}${url}`;
 

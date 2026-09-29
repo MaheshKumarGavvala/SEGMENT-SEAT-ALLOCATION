@@ -64,19 +64,125 @@ html.embedded body { padding-top:0 !important; }
 <header class="app-header"><a class="brand" href="../dashboard/index.html"><span class="brand-mark"><i class="fa-solid fa-bus"></i></span>Smart Segment</a>
 <div class="header-actions"><button class="icon-button" data-theme-toggle title="Change theme" aria-label="Change theme"><i data-theme-icon></i></button>
 <button class="profile-button" onclick="showToast('Profile menu opened.')" aria-label="Open profile menu"><span class="avatar">U</span><span>User</span><i class="fa-solid fa-chevron-down"></i></button></div></header>
-<div class="app-layout"><aside class="sidebar"><div class="nav-label">Main</div><a class="nav-item " href="../dashboard/index.html"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></a><a class="nav-item " href="../booking-confirmation/booking-confirmation.html"><i class="fa-solid fa-ticket"></i><span>My Bookings</span></a><a class="nav-item " href="#" onclick="showToast('This section is ready for its page workflow.');return false"><i class="fa-solid fa-user"></i><span>Profile</span></a><a class="nav-item " href="#" onclick="showToast('This section is ready for its page workflow.');return false"><i class="fa-solid fa-gear"></i><span>Settings</span></a><div class="nav-label">Account</div><a class="nav-item" href="../../auth/auth/login/login.html" onclick="try{SmartSegmentAPI.clearSession();sessionStorage.clear()}catch(e){};location.replace(this.href);return false;"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a></aside><main class="main">
-<div class="container"><div class="flow"><span class="flow-step done">✓ Search</span><span class="flow-line"></span><span class="flow-step done">✓ Stops</span><span class="flow-line"></span><span class="flow-step done">✓ Seats</span><span class="flow-line"></span><span class="flow-step active">4. Passenger</span><span class="flow-line"></span><span class="flow-step">5. Payment</span></div>
-<div class="page-header"><div><h1>Passenger Details</h1><p>Enter passenger information for the selected seat.</p></div></div>
-<div class="two-column"><section><div class="card passenger-card"><div class="passenger-heading"><strong>Passenger 1</strong><span style="font-size:12px;color:var(--muted)">Seat —</span></div>
-<div class="form-grid"><div class="field"><label>Full Name <em>*</em></label><input required placeholder="Enter full name"></div>
-<div class="field"><label>Age <em>*</em></label><input type="number" min="1" required placeholder="Enter age"></div>
-<div class="field"><label>Gender <em>*</em></label><select required><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
-<div class="field"><label>Mobile Number <em>*</em></label><input type="tel" required placeholder="Enter mobile number" inputmode="numeric" maxlength="10" minlength="10" pattern="[0-9]{10}" autocomplete="tel"></div>
-<div class="field"><label>Email</label><input type="email" placeholder="Enter email"></div>
-<div class="field"><label>ID Proof <em>*</em></label><select required><option value="">Select ID proof</option><option>Aadhaar</option><option>Driving Licence</option><option>Passport</option><option>Voter ID</option></select></div><div class="field"><label>ID Proof Number <em>*</em></label><input required placeholder="Enter ID number" autocomplete="off"></div></div></div></section>
-<aside class="card section"><h2 class="section-title">Journey Summary</h2><div class="empty"><i class="fa-solid fa-route"></i><strong>No journey details loaded</strong><span>Bus, segment, boarding point, destination and seat will appear here.</span></div></aside></div>
-<div style="display:flex;justify-content:space-between;margin-top:16px"><a class="btn" href="../segment-selection/seat-selection.html">← Back</a><a class="btn primary" href="../payment/payment.html">Review & Continue →</a></div></div>
-</main></div>
+<div class="app-layout">
+<aside class="sidebar">
+  <div class="nav-label">Main</div>
+  <a class="nav-item" href="../dashboard/index.html"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></a>
+  <a class="nav-item" href="../booking-confirmation/booking-confirmation.html"><i class="fa-solid fa-ticket"></i><span>My Bookings</span></a>
+  <a class="nav-item" href="#"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+  <a class="nav-item" href="#"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+  <div class="nav-label">Account</div>
+  <a class="nav-item" href="../../auth/auth/login/login.html" onclick="try{SmartSegmentAPI.clearSession();sessionStorage.clear()}catch(e){};location.replace(this.href);return false;"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
+</aside>
+
+<main class="main">
+  <div class="container passenger-page">
+
+    <div class="booking-progress" aria-label="Booking progress">
+      <div class="progress-step done"><span>✓</span><div><small>01</small><b>Search</b></div></div>
+      <div class="progress-line done"></div>
+      <div class="progress-step done"><span>✓</span><div><small>02</small><b>Stops</b></div></div>
+      <div class="progress-line done"></div>
+      <div class="progress-step done"><span>✓</span><div><small>03</small><b>Seats</b></div></div>
+      <div class="progress-line active"></div>
+      <div class="progress-step active"><span>04</span><div><small>04</small><b>Passenger</b></div></div>
+      <div class="progress-line"></div>
+      <div class="progress-step"><span>05</span><div><small>05</small><b>Payment</b></div></div>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <div class="eyebrow"><i class="fa-solid fa-user-pen"></i> Passenger information</div>
+        <h1>Passenger Details</h1>
+        <p>Enter the passenger details exactly as they should appear on the ticket.</p>
+      </div>
+      <div class="secure-note"><i class="fa-solid fa-shield-halved"></i><span>Secure booking</span></div>
+    </div>
+
+    <div class="booking-layout">
+
+      <section class="form-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Passenger Details</h2>
+            <p>All fields marked <em>*</em> are required.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label>Full Name <em>*</em></label>
+            <div class="input-wrap"><i class="fa-regular fa-user"></i><input required autocomplete="name" placeholder="Enter full name"></div>
+          </div>
+
+          <div class="field">
+            <label>Age <em>*</em></label>
+            <div class="input-wrap"><i class="fa-solid fa-hashtag"></i><input type="number" min="1" max="120" required placeholder="Enter age"></div>
+          </div>
+
+          <div class="field">
+            <label>Gender <em>*</em></label>
+            <div class="input-wrap select-wrap"><i class="fa-solid fa-venus-mars"></i><select required><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+          </div>
+
+          <div class="field">
+            <label>Mobile Number <em>*</em></label>
+            <div class="input-wrap"><i class="fa-solid fa-mobile-screen-button"></i><input type="tel" required inputmode="numeric" autocomplete="tel" maxlength="10" minlength="10" pattern="[0-9]{10}" placeholder="10-digit mobile number"></div>
+          </div>
+
+          <div class="field">
+            <label>Email <span>(optional)</span></label>
+            <div class="input-wrap"><i class="fa-regular fa-envelope"></i><input type="email" autocomplete="email" placeholder="Enter email address"></div>
+          </div>
+
+          <div class="field">
+            <label>ID Proof <em>*</em></label>
+            <div class="input-wrap select-wrap"><i class="fa-regular fa-id-card"></i><select required><option value="">Select ID proof</option><option>Aadhaar</option><option>Driving Licence</option><option>Passport</option><option>Voter ID</option></select></div>
+          </div>
+
+          <div class="field field-wide">
+            <label>ID Proof Number <em>*</em></label>
+            <div class="input-wrap"><i class="fa-solid fa-id-card"></i><input required placeholder="Enter ID proof number" autocomplete="off"></div>
+          </div>
+        </div>
+
+        <div class="info-strip">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Please carry the same ID proof while travelling. Passenger details can be used for ticket verification.</span>
+        </div>
+      </section>
+
+      <aside class="journey-panel">
+        <div class="journey-heading">
+          <div>
+            <span class="section-kicker">YOUR TRIP</span>
+            <h2>Journey Summary</h2>
+          </div>
+          <i class="fa-solid fa-route"></i>
+        </div>
+
+        <div class="journey-summary">
+          <div class="empty">
+            <i class="fa-solid fa-route"></i>
+            <strong>No journey details loaded</strong>
+            <span>Bus, segment, boarding point, destination and seat will appear here.</span>
+          </div>
+        </div>
+
+        <div class="summary-note">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Your selected seat and journey will be shown here before payment.</span>
+        </div>
+      </aside>
+    </div>
+
+    <div class="action-bar">
+      <a class="btn secondary-btn" href="../segment-selection/seat-selection.html"><i class="fa-solid fa-arrow-left"></i> Back to Seats</a>
+      <a class="btn primary next-btn" href="../payment/payment.html">Review &amp; Continue <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+</main>
+</div>
 <div class="toast"></div>
 <script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/theme.js"></script><script src="../../auth/shared/js/ui.js"></script><script src="../../auth/shared/js/modal.js"></script><script src="../../auth/shared/js/validation.js"></script>
 <script src="passenger-details.js"></script><script src="../../auth/shared/js/embedded.js"></script></body></html>

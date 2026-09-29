@@ -67,14 +67,121 @@ html.embedded body { padding-top:0 !important; }
 
 </head><body>
 <header class="app-header"><a class="brand" href="../dashboard/index.html"><span class="brand-mark"><i class="fa-solid fa-bus"></i></span>Smart Segment</a><div class="header-actions"><button class="icon-button" data-theme-toggle aria-label="Change theme"><i data-theme-icon></i></button><button class="profile-button"><span class="avatar">U</span><span>User</span><i class="fa-solid fa-chevron-down"></i></button></div></header>
-<div class="app-layout"><aside class="sidebar"><div class="nav-label">Main</div><a class="nav-item" href="../dashboard/index.html"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></a><a class="nav-item" href="../booking-confirmation/booking-confirmation.html"><i class="fa-solid fa-ticket"></i><span>My Bookings</span></a><a class="nav-item" href="#"><i class="fa-solid fa-user"></i><span>Profile</span></a><div class="nav-label">Account</div><a class="nav-item" href="../../auth/auth/login/login.html" onclick="try{SmartSegmentAPI.clearSession();sessionStorage.clear()}catch(e){};location.replace(this.href);return false;"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a></aside>
-<main class="main"><div class="container"><div class="flow"><span class="flow-step done">✓ Search</span><span class="flow-line"></span><span class="flow-step done">✓ Stops</span><span class="flow-line"></span><span class="flow-step done">✓ Seat</span><span class="flow-line"></span><span class="flow-step done">✓ Passenger</span><span class="flow-line"></span><span class="flow-step active">5. Payment</span></div>
-<div class="page-header"><div><h1>Payment Confirmation</h1><p>Review your booking and securely confirm the payment.</p></div></div>
-<div class="payment-grid"><section class="card section"><div class="section-heading"><div><h2 class="section-title">Payment Method</h2><p class="section-description">Choose how you want to pay.</p></div><span class="secure-chip"><i class="fa-solid fa-shield-halved"></i> Secure</span></div>
-<div class="payment-methods"><button class="payment-method active" type="button"><i class="fa-solid fa-qrcode"></i><span><b>UPI</b><small>Instant payment</small></span></button><button class="payment-method" type="button"><i class="fa-regular fa-credit-card"></i><span><b>Card</b><small>Debit or credit card</small></span></button><button class="payment-method" type="button"><i class="fa-solid fa-building-columns"></i><span><b>Net Banking</b><small>Bank transfer</small></span></button></div>
-</section>
-<aside class="card section"><h2 class="section-title">Fare Summary</h2><p class="section-description">Final amount comes from the selected journey.</p><div class="fare-summary"><div><span>Base Fare</span><strong>₹—</strong></div><div><span>Taxes / Fees</span><strong>₹—</strong></div><div class="total"><span>Total</span><strong>₹—</strong></div></div><div class="empty compact"><i class="fa-solid fa-receipt"></i><span>Fare details will appear after booking data is loaded.</span></div></aside></div>
-<div class="payment-actions"><a class="btn" href="../passenger-details/passenger-details.html">← Back</a><button class="btn primary" id="continuePayment">Continue to Payment <i class="fa-solid fa-arrow-right"></i></button></div>
-<section class="card section verification" id="verification" hidden><div class="verification-icon"><i class="fa-solid fa-shield-halved"></i></div><h2 class="section-title">Confirm Payment</h2><p class="section-description">Enter your payment verification code to continue.</p><div class="otp" aria-label="Verification code"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"></div><div class="verification-actions"><button class="btn" id="cancelVerify">Cancel</button><button class="btn primary" id="verifyPay">Verify & Pay</button></div></section>
-</div></main></div><div class="toast"></div><script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/theme.js"></script><script src="../../auth/shared/js/ui.js"></script><script src="payment.js?v=2"></script>
+<div class="app-layout">
+<aside class="sidebar">
+  <div class="nav-label">Main</div>
+  <a class="nav-item" href="../dashboard/index.html"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></a>
+  <a class="nav-item" href="../booking-confirmation/booking-confirmation.html"><i class="fa-solid fa-ticket"></i><span>My Bookings</span></a>
+  <a class="nav-item" href="#"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+  <div class="nav-label">Account</div>
+  <a class="nav-item" href="../../auth/auth/login/login.html" onclick="try{SmartSegmentAPI.clearSession();sessionStorage.clear()}catch(e){};location.replace(this.href);return false;"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
+</aside>
+
+<main class="main">
+<div class="container payment-page">
+
+  <div class="booking-progress">
+    <div class="progress-step done"><span>✓</span><div><small>01</small><b>Search</b></div></div>
+    <div class="progress-line done"></div>
+    <div class="progress-step done"><span>✓</span><div><small>02</small><b>Stops</b></div></div>
+    <div class="progress-line done"></div>
+    <div class="progress-step done"><span>✓</span><div><small>03</small><b>Seats</b></div></div>
+    <div class="progress-line done"></div>
+    <div class="progress-step done"><span>✓</span><div><small>04</small><b>Passenger</b></div></div>
+    <div class="progress-line active"></div>
+    <div class="progress-step active"><span>05</span><div><small>05</small><b>Payment</b></div></div>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <div class="eyebrow"><i class="fa-solid fa-lock"></i> Secure checkout</div>
+      <h1>Payment</h1>
+      <p>Review your fare and choose a payment method to complete your booking.</p>
+    </div>
+    <div class="secure-note"><i class="fa-solid fa-shield-halved"></i> Secure payment</div>
+  </div>
+
+  <div class="payment-grid">
+
+    <section class="payment-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="section-kicker">PAYMENT METHOD</span>
+          <h2>Choose how you want to pay</h2>
+          <p>Select one payment method below.</p>
+        </div>
+      </div>
+
+      <div class="payment-methods">
+        <button class="payment-method active" type="button">
+          <i class="fa-solid fa-qrcode"></i>
+          <span><b>UPI</b><small>Instant payment</small></span>
+          <i class="method-check fa-solid fa-circle-check"></i>
+        </button>
+        <button class="payment-method" type="button">
+          <i class="fa-regular fa-credit-card"></i>
+          <span><b>Card</b><small>Debit or credit card</small></span>
+          <i class="method-check fa-solid fa-circle-check"></i>
+        </button>
+        <button class="payment-method" type="button">
+          <i class="fa-solid fa-building-columns"></i>
+          <span><b>Net Banking</b><small>Bank transfer</small></span>
+          <i class="method-check fa-solid fa-circle-check"></i>
+        </button>
+      </div>
+
+      <div class="payment-info">
+        <i class="fa-solid fa-circle-info"></i>
+        <div><b>Safe and secure</b><span>Your payment is processed securely. Your booking is confirmed only after successful verification.</span></div>
+      </div>
+    </section>
+
+    <aside class="fare-panel">
+      <div class="fare-heading">
+        <div>
+          <span class="section-kicker">BOOKING TOTAL</span>
+          <h2>Fare Summary</h2>
+        </div>
+        <i class="fa-solid fa-receipt"></i>
+      </div>
+
+      <div class="fare-summary">
+        <div><span>Journey fare</span><strong>₹—</strong></div>
+        <div><span>Taxes / Fees</span><strong>₹—</strong></div>
+        <div class="total"><span>Total Amount</span><strong>₹—</strong></div>
+      </div>
+
+      <div class="fare-note">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Final fare is calculated from your selected journey and seats.</span>
+      </div>
+    </aside>
+  </div>
+
+  <div class="payment-actions">
+    <a class="btn back-btn" href="../passenger-details/passenger-details.html"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    <button class="btn primary pay-btn" id="continuePayment">Continue to Payment <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+
+  <section class="verification" id="verification" hidden>
+    <div class="verification-box">
+      <button class="verification-close" id="cancelVerify" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="verification-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <h2>Confirm Payment</h2>
+      <p>Enter the 5-digit verification code to complete your booking.</p>
+      <div class="otp" aria-label="Verification code">
+        <input maxlength="1" inputmode="numeric" aria-label="Digit 1">
+        <input maxlength="1" inputmode="numeric" aria-label="Digit 2">
+        <input maxlength="1" inputmode="numeric" aria-label="Digit 3">
+        <input maxlength="1" inputmode="numeric" aria-label="Digit 4">
+        <input maxlength="1" inputmode="numeric" aria-label="Digit 5">
+      </div>
+      <button class="btn primary verify-btn" id="verifyPay">Verify &amp; Pay</button>
+      <button class="cancel-text" type="button" id="cancelVerifyText">Cancel</button>
+    </div>
+  </section>
+
+</div>
+</main>
+</div><div class="toast"></div><script src="../../auth/shared/js/api.js"></script><script src="../../auth/shared/js/theme.js"></script><script src="../../auth/shared/js/ui.js"></script><script src="payment.js?v=2"></script>
 <script src="../../auth/shared/js/embedded.js"></script></body></html>

@@ -2,11 +2,166 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Smart Segment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Segment | Bus Ticket Booking</title>
+<meta name="description" content="Smart Segment bus ticket booking and intelligent seat allocation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="auth/shared/js/api.js?v=1"></script>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<script>location.replace("./user/landing%20page%27/index.html");</script>
-<noscript><a href="/user/landing%20page%27/index.html">Open Smart Segment</a></noscript>
+<div id="scrollProgress" aria-hidden="true"></div>
+
+<header class="header">
+  <a class="brand" href="#home" aria-label="Smart Segment home">
+    <span class="brand-symbol"><i data-lucide="bus-front"></i></span>
+    <span class="brand-text"><strong>Smart Segment</strong></span>
+  </a>
+  <a class="login-button" href="auth/auth/login/login.html">
+    <span class="profile-icon"><i data-lucide="user-round"></i></span>
+    <span>Login / Sign Up</span>
+  </a>
+</header>
+
+<main id="home">
+  <section class="hero">
+    <div class="hero-image">
+      <img src="https://daimlerbuses-mbngw.scene7.com/is/image/daimlerbusesmbngw/tourismo-rhd-tr-stage-DSCF0360%3A16x9?dpr=off&ts=1768385118943" alt="Modern coach bus on a scenic mountain road">
+      <div class="hero-overlay"></div>
+      <div class="hero-copy">
+        <span class="hero-tag"><i data-lucide="bus-front"></i> SMART BUS BOOKING</span>
+        <h1>Travel simple.<br><span>Book smarter.</span></h1>
+        <p>Find your bus, choose your journey and reserve your seat with a clean, simple booking experience.</p>
+      </div>
+    </div>
+
+    <div class="booking-card" id="booking">
+      <div class="booking-top">
+        <div class="booking-tabs">
+          <button class="booking-tab active" type="button"><i data-lucide="bus-front"></i> Buses</button>
+        </div>
+        <span class="booking-caption">Book your bus journey</span>
+      </div>
+
+      <div class="search-fields">
+        <label class="search-field landing-location" for="from">
+          <span class="field-icon"><i data-lucide="map-pin"></i></span>
+          <div class="landing-input-wrap">
+            <input id="from" placeholder="Leaving from" autocomplete="off">
+            <button type="button" data-clear="from" aria-label="Clear boarding stop">×</button>
+            <div class="dropdown" id="fromDrop"></div>
+          </div>
+        </label>
+
+        <button class="swap" id="swap" type="button" aria-label="Swap locations"><i data-lucide="arrow-left-right"></i></button>
+
+        <label class="search-field landing-location" for="to">
+          <span class="field-icon"><i data-lucide="map-pin"></i></span>
+          <div class="landing-input-wrap">
+            <input id="to" placeholder="Going to" autocomplete="off">
+            <button type="button" data-clear="to" aria-label="Clear destination">×</button>
+            <div class="dropdown" id="toDrop"></div>
+          </div>
+        </label>
+
+        <div class="travel-date-group">
+          <button class="date-quick" id="todayDate" type="button">Today</button>
+          <button class="date-quick" id="tomorrowDate" type="button">Tomorrow</button>
+          <label class="search-field landing-date" for="date">
+            <span class="field-icon"><i data-lucide="calendar-days"></i></span>
+            <div class="landing-input-wrap">
+              <input id="date" type="date" aria-label="Travel date">
+            </div>
+          </label>
+        </div>
+
+        <button class="search-btn" id="landingSearch" type="button"><span>Search Buses</span></button>
+      </div>
+
+      <div class="planner-message" id="plannerMessage"><span class="message-dot"></span> Select your boarding stop and destination to continue.</div>
+    </div>
+  </section>
+
+  <section class="whats-new" aria-labelledby="whatsNewTitle">
+    <div class="whats-new-head">
+      <h2 id="whatsNewTitle">What makes Smart Segment special?</h2>
+      <p>Simple tools built around smarter segment-based seat allocation.</p>
+    </div>
+    <div class="whats-new-track">
+      <article class="new-card new-card-orange">
+        <div class="new-card-icon"><i data-lucide="route"></i></div>
+        <div class="new-card-body">
+          <span class="new-card-kicker">SMART ALLOCATION</span>
+          <h3>Seats based on your journey</h3>
+          <p>Availability is checked for the exact stops you travel between.</p>
+        </div>
+      </article>
+      <article class="new-card">
+        <div class="new-card-icon"><i data-lucide="armchair"></i></div>
+        <div class="new-card-body">
+          <span class="new-card-kicker">BETTER UTILIZATION</span>
+          <h3>Use available seats smarter</h3>
+          <p>A seat occupied on one segment can still be available on another.</p>
+        </div>
+      </article>
+      <article class="new-card">
+        <div class="new-card-icon"><i data-lucide="map-pinned"></i></div>
+        <div class="new-card-body">
+          <span class="new-card-kicker">CLEAR JOURNEY</span>
+          <h3>Know your complete trip</h3>
+          <p>See boarding point, destination, date and seat before confirming.</p>
+        </div>
+      </article>
+      <article class="new-card new-card-soft">
+        <div class="new-card-icon"><i data-lucide="ticket-check"></i></div>
+        <div class="new-card-body">
+          <span class="new-card-kicker">EASY BOOKING</span>
+          <h3>Book with fewer steps</h3>
+          <p>Choose your route, select an available seat and confirm your ticket.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="quick-section">
+    <div class="section-heading">
+      <div><span class="eyebrow">ABOUT SMART SEGMENT</span><h2>What makes our <span>seat allocation</span> smart?</h2></div>
+      <p>Smart Segment is designed to make bus seat booking more flexible when passengers travel between different stops on the same route.</p>
+    </div>
+
+    <div class="about-panel">
+      <div class="about-copy">
+        <div class="about-icon"><i data-lucide="sparkles"></i></div>
+        <div>
+          <h3>Smart Segment Seat Allocation</h3>
+          <p>Instead of treating a bus journey as one fixed block, the system looks at the individual travel segments between stops. This helps identify seats that are available for the part of the route a passenger actually needs.</p>
+          <p>For example, if a seat is occupied from <strong>B → D</strong>, that same seat may still be usable for a passenger travelling from <strong>A → B</strong> or <strong>D → E</strong>. The system uses this segment-level availability to make better use of seats.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-section">
+      <div class="how-heading"><span class="eyebrow">HOW IT WORKS</span><h2>Book your journey in <span>4 simple steps</span></h2></div>
+      <div class="steps-grid">
+        <article class="step-card"><span class="step-number">01</span><div class="step-icon"><i data-lucide="map-pin"></i></div><h3>Choose your route</h3><p>Select your boarding stop and destination.</p></article>
+        <article class="step-card"><span class="step-number">02</span><div class="step-icon"><i data-lucide="search"></i></div><h3>Check availability</h3><p>The system checks seats across your travel segments.</p></article>
+        <article class="step-card"><span class="step-number">03</span><div class="step-icon"><i data-lucide="armchair"></i></div><h3>Select your seat</h3><p>Choose an available seat that covers your journey.</p></article>
+        <article class="step-card"><span class="step-number">04</span><div class="step-icon"><i data-lucide="ticket-check"></i></div><h3>Confirm booking</h3><p>Complete the booking and view your journey details.</p></article>
+      </div>
+    </div>
+
+    <div class="quick-grid">
+      <article class="quick-card"><span><i data-lucide="route"></i></span><div><h3>Segment-based booking</h3><p>Seat availability is considered for the portions of the route you actually travel.</p></div></article>
+      <article class="quick-card"><span><i data-lucide="armchair"></i></span><div><h3>Smarter seat utilization</h3><p>Available seats can be used more effectively across different journey segments.</p></div></article>
+      <article class="quick-card"><span><i data-lucide="map-pinned"></i></span><div><h3>Clear journey details</h3><p>See your route, boarding point, destination, date and seat before you travel.</p></div></article>
+    </div>
+  </section>
+</main>
+
+<script src="auth/shared/js/api.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

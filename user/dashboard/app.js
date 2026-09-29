@@ -20,36 +20,51 @@ document.addEventListener('click',e=>{if(!e.target.closest('#userMenu')&&!e.targ
 function setActive(id){$$('.nav-link').forEach(x=>x.classList.remove('active'));if(id)$(id)?.classList.add('active')}
 function signout(){try{SmartSegmentAPI.clearSession();sessionStorage.clear()}catch(e){} location.href='../../auth/auth/login/login.html'}$('#menuSignout')?.addEventListener('click',signout);
 function openFrame(url){if(!frame)return;const u=new URL(url,location.href);u.searchParams.set('embedded','1');body.classList.add('frame-mode');frame.src=u.href;sessionStorage.setItem('smartFrameOpen','1');sessionStorage.setItem('smartFrameUrl',u.href);setActive(null)}
-function closeFrame(success=false){body.classList.remove('frame-mode');if(frame)frame.src='about:blank';sessionStorage.removeItem('smartFrameOpen');sessionStorage.removeItem('smartFrameUrl');setActive('#homeNav');if(success){setTimeout(()=>{const t=document.querySelector('.toast');if(t){t.textContent='Booking successful!';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}else{alert('Booking successful!')}},120)}}
+function closeFrame(success=false){
+  body.classList.remove('frame-mode');
+  if(frame)frame.src='about:blank';
+  sessionStorage.removeItem('smartFrameOpen');
+  sessionStorage.removeItem('smartFrameUrl');
+  setActive('#homeNav');
+
+  if(success){
+    setTimeout(()=>{
+      let bookingCode='';
+      try{
+        const result=JSON.parse(sessionStorage.getItem('lastBookingResult')||'null');
+        bookingCode=sessionStorage.getItem('lastSuccessBookingCode')||result?.bookings?.[0]?.booking_code||'';
+      }catch(e){}
+
+      // Show success only once for this particular booking.
+      const shownKey='smartSegmentSuccessShownCode';
+      const alreadyShown=bookingCode && localStorage.getItem(shownKey)===bookingCode;
+      if(alreadyShown)return;
+
+      if(bookingCode)localStorage.setItem(shownKey,bookingCode);
+
+      const t=document.querySelector('.toast');
+      if(t){
+        t.textContent='Booking successful!';
+        t.classList.add('show');
+        setTimeout(()=>t.classList.remove('show'),3000);
+      }
+    },120);
+  }
+}
 frame?.addEventListener('load',()=>{try{frame.contentWindow.postMessage({type:'theme',theme:root.dataset.theme||'light'},'*');frame.contentWindow.scrollTo(0,0);}catch(e){}});
 $('#brandHome')?.addEventListener('click',e=>{e.preventDefault();closeFrame()});$('#homeNav')?.addEventListener('click',closeFrame);
 const bookingUrl='../booking-confirmation/booking-confirmation.html';
 $('#bookingsNav')?.addEventListener('click',()=>openFrame(bookingUrl));$('#metricBookings')?.addEventListener('click',()=>openFrame(bookingUrl));$('#allBookings')?.addEventListener('click',()=>openFrame(bookingUrl));
 $('#helpNav')?.addEventListener('click',()=>alert('Smart Segment support is available in the full application.'));
-$('#learnMore')?.addEventListener('click',()=>document.querySelector('.smart-card')?.scrollIntoView({behavior:'smooth',block:'center'}));
 const date=$('#date');const today=new Date();today.setMinutes(today.getMinutes()-today.getTimezoneOffset());if(date){date.value=today.toISOString().slice(0,10);date.min=date.value}
 async function loadDashboardData(){
   try{
     const session=JSON.parse(localStorage.getItem('smartSegmentSession')||'null');
-    if(!session?.token){ window.location.assign('/auth/auth/login/login.html'); return; }
+    if(!session?.token){ window.location.assign('../../auth/auth/login/login.html'); return; }
     // Load stops independently. A booking-history failure must never prevent
     // the search suggestions from appearing.
     try{
-      // Use a direct same-origin request here. This keeps the dashboard
-      // stop suggestions independent of the shared API helper/session code.
-      const controller=new AbortController();
-      const timeout=setTimeout(()=>controller.abort(),5000);
-      let res;
-      try{
-	res=await fetch(`https://segment-seat-allocation.onrender.com/api/stops?_=${Date.now()}`,{
-          method:'GET',
-          headers:{'Accept':'application/json','Cache-Control':'no-cache'},
-          cache:'no-store',
-          signal:controller.signal
-        });
-      }finally{clearTimeout(timeout)}
-      const payload=await res.json().catch(()=>({}));
-      if(!res.ok) throw new Error(payload.message||`Could not load stops (HTTP ${res.status}).`);
+      const payload=await SmartSegmentAPI.get(`/api/stops?_=${Date.now()}`);
       stops=Array.isArray(payload.data)?payload.data:[];
       stopsLoaded=true;
       if(!stops.length){
@@ -66,17 +81,13 @@ async function loadDashboardData(){
     }
     const name=session.name||'Passenger';
     const safeName=clean(name);
-    const firstLetter=(String(name).trim().charAt(0)||'P').toUpperCase();
     const heading=document.querySelector('h1');
     if(heading) heading.textContent=`Good to see you, ${safeName}.`;
 
     // Keep the dashboard account area in sync with the logged-in user.
-    document.querySelectorAll('#userBtn .avatar, #userMenu .avatar').forEach(el=>{el.textContent=firstLetter;});
-    const accountName=document.querySelector('#userBtn .user-copy b');
+    const accountName=document.querySelector('#headerUserName');
     if(accountName) accountName.textContent=name;
-    const menuName=document.querySelector('#userMenu .user-menu-head b');
-    if(menuName) menuName.textContent=name;
-    let bookings=[];
+        let bookings=[];
     try{
       const bookingsResponse=await SmartSegmentAPI.get('/api/bookings/mine');
       bookings=bookingsResponse.data||[];
@@ -84,10 +95,16 @@ async function loadDashboardData(){
       // Keep the dashboard/search usable even if booking history is unavailable.
       console.warn('Could not load booking history:',bookingError);
     }
-    const count=document.querySelector('#bookingNumber'); if(count) count.textContent=bookings.length;
+    // Keep dashboard history in sync with tickets the passenger removed from History.
+    const hiddenHistoryKey='smartSegmentRemovedBookingHistory';
+    let hiddenHistory=new Set();
+    try{ hiddenHistory=new Set(JSON.parse(localStorage.getItem(hiddenHistoryKey)||'[]').map(String)); }catch(e){}
+    const visibleBookings=bookings.filter(b=>!hiddenHistory.has(String(b.booking_code||'')));
+    const count=document.querySelector('#bookingNumber'); if(count) count.textContent=visibleBookings.length;
     const list=document.querySelector('.journeys');
     if(list){
-      const recent=bookings.slice(0,3);
+      // Dashboard shows only the latest 3 tickets that are still kept in history.
+      const recent=visibleBookings.slice(0,3);
       list.innerHTML=recent.length?recent.map(b=>`<button class="journey" type="button" data-booking-code="${clean(b.booking_code||'')}"><span class="route-badge"><svg viewBox="0 0 24 24"><path d="M5 17h14M7 17V8h10v9M9 8V5h6v3M8 20h2M14 20h2"/></svg></span><span class="journey-copy"><b>${clean(b.from_stop?.name||'')} <i>→</i> ${clean(b.to_stop?.name||'')}</b><small>${clean(b.travel_date||'')} · ${clean(b.passengers?.map(p=>`Seat ${p.seat_number}`).join(', ')||'')}</small></span><span class="journey-status ${b.status==='confirmed'?'confirmed':b.status==='cancelled'?'completed':'completed'}">${clean(b.status||'')}</span><svg class="row-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>`).join(''):'<div class="empty">No bookings yet. Search for a bus to start your journey.</div>';
       $$('.journey',list).forEach(btn=>btn.addEventListener('click',()=>{
         const code=btn.dataset.bookingCode||'';
@@ -112,9 +129,7 @@ function render(input,drop,type){
 }
 async function loadStopsForSearch(input,drop,type){
  try{
-   const res=await fetch(`https://segment-seat-allocation.onrender.com/api/stops?_=${Date.now()}`,{headers:{'Accept':'application/json'},cache:'no-store'});
-   const payload=await res.json().catch(()=>({}));
-   if(!res.ok)throw new Error(payload.message||`Could not load stops (HTTP ${res.status}).`);
+   const payload=await SmartSegmentAPI.get(`/api/stops?_=${Date.now()}`);
    stops=Array.isArray(payload.data)?payload.data:[];stopsLoaded=true;
    render(input,drop,type);
    if(stops.length)message(`${stops.length} route stops available.`);
@@ -131,7 +146,7 @@ function updateClear(){$$('[data-clear]').forEach(b=>b.classList.toggle('show',!
 $('#swap')?.addEventListener('click',()=>{const fi=$('#from'),ti=$('#to');[fi.value,ti.value]=[ti.value,fi.value];[fromStop,toStop]=[toStop,fromStop];closeDrop($('#fromDrop'));closeDrop($('#toDrop'));updateClear();const s=$('#swap');s.classList.remove('swapping');void s.offsetWidth;s.classList.add('swapping');setTimeout(()=>s.classList.remove('swapping'),300);if(fromStop&&toStop)message(Number(fromStop.route_id)===Number(toStop.route_id)?'Locations swapped successfully. The route is ready.':'Locations swapped. Choose stops on the same route for this preview.',Number(fromStop.route_id)!==Number(toStop.route_id));else message('Locations swapped. Complete both stops to continue.')});
 document.addEventListener('click',e=>{if(!e.target.closest('.field'))$$('.dropdown').forEach(closeDrop)});
 $('#searchForm')?.addEventListener('submit',e=>{e.preventDefault();if(!stopsLoaded)return message('Loading stops. Please try again in a moment.',true);if(!$('#from').value||!$('#to').value||!date.value)return message('Please complete both stops and select a travel date.',true);if(!fromStop||!toStop)return message('Please select stops from the suggestions so the route is exact.',true);if(Number(fromStop.route_id)!==Number(toStop.route_id))return message('For this independent preview, choose stops on the same route.',true);try{sessionStorage.setItem('searchFrom',fromStop.name);sessionStorage.setItem('searchTo',toStop.name);sessionStorage.setItem('travelDate',date.value)}catch(e){}openFrame('../bus-search/bus-search.html')});
-window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='themeRequest')applyTheme(d.theme==='dark');if(d.type==='navigateFrame')openFrame(d.url);if(d.type==='closeFrame'){closeFrame(!!d.bookingSuccess);setTimeout(loadDashboardData,180)}if(d.type==='bookingChanged')setTimeout(loadDashboardData,180)});
+window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='themeRequest')applyTheme(d.theme==='dark');if(d.type==='navigateFrame')openFrame(d.url);if(d.type==='closeFrame'){if(d.bookingCode)sessionStorage.setItem('lastSuccessBookingCode',d.bookingCode);closeFrame(!!d.bookingSuccess);setTimeout(loadDashboardData,180)}if(d.type==='bookingChanged')setTimeout(loadDashboardData,180)});
 loadDashboardData();
 try{if(sessionStorage.getItem('smartFrameOpen')==='1'&&sessionStorage.getItem('smartFrameUrl')){body.classList.add('frame-mode');frame.src=sessionStorage.getItem('smartFrameUrl')}}catch(e){}
 })();

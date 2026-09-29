@@ -58,9 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         role: role.value
       });
       SmartSegmentAPI.setSession(response.data || response);
-      const isGitHubPages = location.hostname.endsWith("github.io");
-      const basePath = isGitHubPages ? "/SEGMENT-SEAT-ALLOCATION" : "";
-      window.location.assign(role.value === "admin" ? `${basePath}/admin/dashboard/dashboard.html` : `${basePath}/user/dashboard/index.html`);
+      window.location.assign(role.value === "admin" ? "../../../admin/dashboard/dashboard.html" : "../../../user/dashboard/index.html");
     } catch (error) {
       msg.textContent = error.message || "Unable to sign in. Please try again.";
       btn.disabled = false;
