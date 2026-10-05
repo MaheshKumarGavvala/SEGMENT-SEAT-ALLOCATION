@@ -1,8 +1,52 @@
 const express=require('express'),cors=require('cors'),bcrypt=require('bcryptjs'),crypto=require('crypto'),path=require('path');require('dotenv').config();
 const {pool,checkDatabase}=require('./db');const {sign,requireAuth,requireAdmin}=require('./auth');
 const app=express();app.use(cors());app.use(express.json());
+const frontendLoginUrl=process.env.FRONTEND_LOGIN_URL||'https://maheshkumargavvala.github.io/SEGMENT-SEAT-ALLOCATION/auth/auth/login/login.html';
+const googleRedirectUri=process.env.GOOGLE_REDIRECT_URI||'https://segment-seat-allocation.onrender.com/api/auth/google/callback';
+const googleAuthBase='https://accounts.google.com/o/oauth2/v2/auth';
+const googleTokenUrl='https://oauth2.googleapis.com/token';
+const googleUserInfoUrl='https://openidconnect.googleapis.com/v1/userinfo';
+function googleConfigured(){return Boolean(process.env.GOOGLE_CLIENT_ID&&process.env.GOOGLE_CLIENT_SECRET)}
+function googleState(){return require('jsonwebtoken').sign({nonce:crypto.randomBytes(24).toString('hex'),purpose:'google-login'},process.env.JWT_SECRET||'dev-secret',{expiresIn:'10m'})}
 const root=path.resolve(__dirname,'../..');
 app.get('/api/health',async(req,res)=>{const db=await checkDatabase();res.status(db.ok?200:503).json({ok:db.ok,service:'Smart Segment Backend',database:db.ok?'connected':'unavailable',error:db.ok?null:db.message});});
+app.get('/api/auth/google',(req,res)=>{
+  if(!googleConfigured())return res.status(503).json({message:'Google sign-in is not configured on the server yet.'});
+  const params=new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,redirect_uri:googleRedirectUri,response_type:'code',scope:'openid email profile',state:googleState(),prompt:'select_account'});
+  res.redirect(`${googleAuthBase}?${params.toString()}`);
+});
+app.get('/api/auth/google/callback',async(req,res)=>{
+  try{
+    if(!googleConfigured())return res.status(503).send('Google sign-in is not configured.');
+    const {code,state,error}=req.query;
+    if(error)return res.redirect(`${frontendLoginUrl}?google_error=${encodeURIComponent(error)}`);
+    if(!code||!state) return res.status(400).send('Invalid Google sign-in response.');
+    const jwt=require('jsonwebtoken');
+    const stateData=jwt.verify(String(state),process.env.JWT_SECRET||'dev-secret');
+    if(stateData.purpose!=='google-login')throw new Error('Invalid Google sign-in state.');
+    const tokenResponse=await fetch(googleTokenUrl,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({code:String(code),client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,redirect_uri:googleRedirectUri,grant_type:'authorization_code'})});
+    const tokenData=await tokenResponse.json();
+    if(!tokenResponse.ok||!tokenData.access_token)throw new Error(tokenData.error_description||'Google token exchange failed.');
+    const profileResponse=await fetch(googleUserInfoUrl,{headers:{Authorization:`Bearer ${tokenData.access_token}`}});
+    const profile=await profileResponse.json();
+    if(!profileResponse.ok||!profile.email||profile.email_verified!==true)throw new Error('Google account email could not be verified.');
+    const email=String(profile.email).trim().toLowerCase();
+    const name=String(profile.name||email.split('@')[0]).trim().toUpperCase();
+    const [rows]=await pool.query('SELECT * FROM users WHERE email=? LIMIT 1',[email]);
+    let user;
+    if(rows.length){
+      if(rows[0].role!=='user')return res.redirect(`${frontendLoginUrl}?google_error=${encodeURIComponent('This Google account is not a passenger account.')}`);
+      user={id:rows[0].id,name:rows[0].name,email:rows[0].email,role:rows[0].role};
+    }else{
+      const passwordHash=await bcrypt.hash(crypto.randomBytes(32).toString('hex'),10);
+      const [created]=await pool.query('INSERT INTO users(name,email,password_hash,role) VALUES (?,?,?,?)',[name,email,passwordHash,'user']);
+      user={id:created.insertId,name,email,role:'user'};
+    }
+    const appToken=sign(user);
+    const payload=Buffer.from(JSON.stringify({...user,token:appToken}),'utf8').toString('base64url');
+    res.redirect(`${frontendLoginUrl}#google_token=${payload}`);
+  }catch(e){console.error('GOOGLE AUTH ERROR:',e);res.redirect(`${frontendLoginUrl}?google_error=${encodeURIComponent('Google sign-in failed. Please try again.')}`)}
+});
 app.post('/api/auth/register',async(req,res)=>{try{const {name,email,password}=req.body;const normalizedName=String(name||'').trim().toUpperCase();if(!normalizedName||!email||!password||password.length<6)return res.status(400).json({message:'Name, valid email and a 6+ character password are required.'});const hash=await bcrypt.hash(password,10);const [r]=await pool.query('INSERT INTO users(name,email,password_hash,role) VALUES (?,?,?,?)',[normalizedName,email.trim().toLowerCase(),hash,'user']);const user={id:r.insertId,name:normalizedName,email:email.trim().toLowerCase(),role:'user'};res.status(201).json({data:{...user,token:sign(user)}})}catch(e){if(e.code==='ER_DUP_ENTRY')return res.status(409).json({message:'An account with this email already exists.'});console.error(e);res.status(500).json({message:'Registration failed.'})}});
 app.post('/api/auth/login',async(req,res)=>{try{const {email,password,role='user'}=req.body;const [rows]=await pool.query('SELECT * FROM users WHERE email=? AND role=?',[String(email||'').trim().toLowerCase(),role]);if(!rows.length||!(await bcrypt.compare(password||'',rows[0].password_hash)))return res.status(401).json({message:'Invalid email, password, or role.'});const u=rows[0],user={id:u.id,name:u.name,email:u.email,role:u.role};res.json({data:{...user,token:sign(user)}})}catch(e){console.error(e);res.status(500).json({message:'Login failed.'})}});
 app.post('/api/auth/reset-password',async(req,res)=>{try{const {email,password}=req.body;if(!email||!password||password.length<6)return res.status(400).json({message:'Email and a 6+ character password are required.'});const hash=await bcrypt.hash(password,10);const [r]=await pool.query('UPDATE users SET password_hash=? WHERE email=?',[hash,email.trim().toLowerCase()]);if(!r.affectedRows)return res.status(404).json({message:'No account found for that email.'});res.json({message:'Password updated successfully.'})}catch(e){console.error(e);res.status(500).json({message:'Password reset failed.'})}});

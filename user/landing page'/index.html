@@ -61,10 +61,33 @@
     <div class="search-panel" id="booking">
       <div class="search-title"><div><b>Find your bus</b><small>Start your journey in a few simple steps.</small></div><span><i data-lucide="lock-keyhole"></i> Secure booking</span></div>
       <div class="search-fields">
-        <div class="search-field"><i data-lucide="map-pin"></i><div><label>FROM</label><b>Boarding Stop</b><small>Choose your boarding point</small></div></div>
-        <button class="swap" aria-label="Swap locations"><i data-lucide="arrow-left-right"></i></button>
-        <div class="search-field"><i data-lucide="map-pin"></i><div><label>TO</label><b>Destination</b><small>Choose where you finish</small></div></div>
-        <div class="search-field date"><i data-lucide="calendar-days"></i><div><label>TRAVEL DATE</label><b>Select date</b><small>Choose your travel day</small></div><i class="chev" data-lucide="chevron-down"></i></div>
+        <div class="search-field landing-field">
+          <i data-lucide="map-pin"></i>
+          <div class="landing-input-area">
+            <label for="landingFrom">FROM</label>
+            <input id="landingFrom" type="text" placeholder="Boarding Stop" autocomplete="off" spellcheck="false">
+            <small>Choose your boarding point</small>
+            <div class="landing-dropdown" id="landingFromDrop"></div>
+          </div>
+        </div>
+        <button class="swap" id="landingSwap" type="button" aria-label="Swap locations"><i data-lucide="arrow-left-right"></i></button>
+        <div class="search-field landing-field">
+          <i data-lucide="map-pin"></i>
+          <div class="landing-input-area">
+            <label for="landingTo">TO</label>
+            <input id="landingTo" type="text" placeholder="Destination" autocomplete="off" spellcheck="false">
+            <small>Choose where you finish</small>
+            <div class="landing-dropdown" id="landingToDrop"></div>
+          </div>
+        </div>
+        <div class="search-field date landing-field">
+          <i data-lucide="calendar-days"></i>
+          <div class="landing-input-area">
+            <label for="landingDate">TRAVEL DATE</label>
+            <input id="landingDate" type="date">
+            <small>Choose your travel day</small>
+          </div>
+        </div>
         <button class="search-btn" id="landingSearch" type="button"><i data-lucide="search"></i><span>Search Buses</span></button>
       </div>
       <div class="search-note"><i data-lucide="info"></i> Smart Segment becomes part of the experience when you choose your seat.</div>
@@ -210,6 +233,6 @@
 </main>
 
 <footer><div class="footer-brand"><span class="brand-symbol"><i data-lucide="bus-front"></i></span><b>SMART <em>SEGMENT</em></b></div><div class="footer-links"><a href="#how">How It Works</a><a href="#comparison">Comparison</a><a href="#faq">FAQ</a></div><span>© 2026 Smart Segment</span></footer>
-<script src="app.js"></script>
+<script src="../../auth/shared/js/api.js"></script><script src="app.js"></script>
 </body>
 </html>

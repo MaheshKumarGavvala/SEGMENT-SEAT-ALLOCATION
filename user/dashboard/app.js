@@ -71,7 +71,8 @@ async function loadDashboardData(){
         message('No stops have been added yet. Add route stops from Admin → Bus Management.',true);
       }else{
         message(`${stops.length} route stops available.`);
-        render(document.querySelector('#from'),document.querySelector('#fromDrop'),'from');
+        restoreLandingSearch();
+        if(!fromStop)render(document.querySelector('#from'),document.querySelector('#fromDrop'),'from');
       }
     }catch(stopError){
       stops=[];
@@ -114,6 +115,26 @@ async function loadDashboardData(){
   }catch(e){ message(e.message||'Could not load dashboard data.',true); }
 }
 function clean(v){return String(v).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[m]))}
+function restoreLandingSearch(){
+  try{
+    const sf=sessionStorage.getItem('searchFrom');
+    const st=sessionStorage.getItem('searchTo');
+    const sd=sessionStorage.getItem('travelDate');
+    const savedFrom=JSON.parse(sessionStorage.getItem('landingFromStop')||'null');
+    const savedTo=JSON.parse(sessionStorage.getItem('landingToStop')||'null');
+    const from=document.querySelector('#from');
+    const to=document.querySelector('#to');
+    if(sf&&from)from.value=sf;
+    if(st&&to)to.value=st;
+    if(sd&&date)date.value=sd;
+    if(savedFrom){fromStop=stops.find(s=>Number(s.id)===Number(savedFrom.id))||savedFrom;}
+    else if(sf)fromStop=stops.find(s=>String(s.name||'').toLowerCase()===String(sf).toLowerCase())||null;
+    if(savedTo){toStop=stops.find(s=>Number(s.id)===Number(savedTo.id))||savedTo;}
+    else if(st)toStop=stops.find(s=>String(s.name||'').toLowerCase()===String(st).toLowerCase())||null;
+    updateClear();
+    if(fromStop&&toStop)message('Your landing-page journey was restored.');
+  }catch(e){console.warn('Could not restore landing search:',e)}
+}
 function message(t,error=false){const el=$('#plannerMessage');if(!el)return;el.innerHTML='<span class="message-dot"></span>'+clean(t);el.classList.toggle('error',error)}
 function closeDrop(d){d?.classList.remove('open');if(d)d.innerHTML=''}
 function render(input,drop,type){

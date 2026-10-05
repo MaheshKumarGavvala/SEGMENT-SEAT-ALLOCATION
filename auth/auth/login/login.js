@@ -1,4 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const googleToken = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("google_token");
+  if (googleToken) {
+    try {
+      const data = JSON.parse(decodeURIComponent(escape(atob(googleToken))));
+      SmartSegmentAPI.setSession(data);
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      window.location.assign("../../../user/dashboard/index.html");
+      return;
+    } catch (error) {
+      console.error("Google sign-in response could not be read.", error);
+    }
+  }
   const form = document.getElementById("loginForm");
   const email = document.getElementById("email");
   const pass = document.getElementById("password");
@@ -7,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const role = document.getElementById("role");
   const emailError = document.getElementById("emailError");
   const passwordError = document.getElementById("passwordError");
+  const googleBtn = document.getElementById("googleBtn");
 
   const setError = (input, node, text) => {
     node.textContent = text;
@@ -30,6 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   email.addEventListener("input", () => setError(email, emailError, ""));
   pass.addEventListener("input", () => setError(pass, passwordError, ""));
+
+  const googleError = new URLSearchParams(window.location.search).get("google_error");
+  if (googleError) msg.textContent = googleError;
+
+  googleBtn?.addEventListener("click", () => {
+    googleBtn.disabled = true;
+    msg.textContent = "Redirecting to Google…";
+    const apiBase = window.location.hostname.endsWith(".github.io")
+      ? "https://segment-seat-allocation.onrender.com"
+      : (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:3000" : window.location.origin);
+    window.location.assign(`${apiBase}/api/auth/google`);
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();

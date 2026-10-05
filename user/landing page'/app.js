@@ -30,7 +30,87 @@ lucide.createIcons();
 const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.1});
 document.querySelectorAll('.reveal,.feature-card,.benefit-cards article,.three-info article').forEach((e,i)=>{if(!e.classList.contains('reveal'))e.classList.add('reveal');e.style.transitionDelay=Math.min(i*45,180)+'ms';observer.observe(e)});
 
-document.getElementById('landingSearch')?.addEventListener('click',()=>{ location.href='../../auth/auth/login/login.html'; });
+/* Landing search: keep the journey selected before the user signs in. */
+(function(){
+  const fromInput=document.getElementById('landingFrom');
+  const toInput=document.getElementById('landingTo');
+  const dateInput=document.getElementById('landingDate');
+  const fromDrop=document.getElementById('landingFromDrop');
+  const toDrop=document.getElementById('landingToDrop');
+  const searchBtn=document.getElementById('landingSearch');
+  const swapBtn=document.getElementById('landingSwap');
+  if(!fromInput||!toInput||!dateInput||!searchBtn)return;
+
+  let stops=[]; let fromStop=null; let toStop=null;
+  const apiBase=window.SmartSegmentAPI;
+  const clean=v=>String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[m]));
+  const close=drop=>{if(drop){drop.classList.remove('open');drop.innerHTML=''}};
+  const today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
+  dateInput.min=today.toISOString().slice(0,10);
+  if(!dateInput.value)dateInput.value=sessionStorage.getItem('travelDate')||dateInput.min;
+
+  async function loadStops(){
+    try{
+      const payload=await apiBase.get(`/api/stops?_=${Date.now()}`);
+      stops=Array.isArray(payload.data)?payload.data:[];
+      restoreSaved();
+    }catch(error){
+      console.error('LANDING STOP LOAD ERROR:',error);
+    }
+  }
+  function matching(input,type){
+    const q=input.value.trim().toLowerCase();
+    if(!q)return [];
+    let results=stops.filter(s=>String(s.name||'').toLowerCase().startsWith(q));
+    if(type==='to'&&fromStop)results=results.filter(s=>Number(s.route_id)===Number(fromStop.route_id)&&Number(s.stop_order)>Number(fromStop.stop_order));
+    return results.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),undefined,{sensitivity:'base'})||String(a.city||'').localeCompare(String(b.city||''),undefined,{sensitivity:'base'})).slice(0,8);
+  }
+  function render(input,drop,type){
+    const results=matching(input,type);
+    if(!input.value.trim()){close(drop);return;}
+    if(!results.length){drop.innerHTML='<div class="landing-no-result">No matching stops found</div>';drop.classList.add('open');return;}
+    drop.innerHTML=results.map((s,i)=>`<button type="button" class="landing-stop" data-index="${i}"><b>${clean(s.name)}</b><small>${clean(s.city||'')} · ${clean(s.route_name||s.route_code||'Route')}</small></button>`).join('');
+    drop.classList.add('open');
+    drop.querySelectorAll('.landing-stop').forEach((button,i)=>button.addEventListener('click',()=>{
+      const selected=results[i]; input.value=selected.name;
+      if(type==='from'){fromStop=selected;toStop=null;toInput.value='';close(toDrop)}else toStop=selected;
+      close(drop);
+    }));
+  }
+  function restoreSaved(){
+    try{
+      const savedFrom=JSON.parse(sessionStorage.getItem('landingFromStop')||'null');
+      const savedTo=JSON.parse(sessionStorage.getItem('landingToStop')||'null');
+      fromStop=savedFrom?.id?stops.find(s=>Number(s.id)===Number(savedFrom.id))||savedFrom:null;
+      toStop=savedTo?.id?stops.find(s=>Number(s.id)===Number(savedTo.id))||savedTo:null;
+      const sf=sessionStorage.getItem('searchFrom'); const st=sessionStorage.getItem('searchTo');
+      if(sf)fromInput.value=sf; if(st)toInput.value=st;
+    }catch(e){}
+  }
+  fromInput.addEventListener('focus',()=>render(fromInput,fromDrop,'from'));
+  toInput.addEventListener('focus',()=>render(toInput,toDrop,'to'));
+  fromInput.addEventListener('input',()=>{fromStop=null;toStop=null;toInput.value='';render(fromInput,fromDrop,'from')});
+  toInput.addEventListener('input',()=>{toStop=null;render(toInput,toDrop,'to')});
+  fromInput.addEventListener('keydown',e=>{if(e.key==='Escape')close(fromDrop)});
+  toInput.addEventListener('keydown',e=>{if(e.key==='Escape')close(toDrop)});
+  swapBtn?.addEventListener('click',()=>{const a=fromStop,b=toStop;fromStop=b;toStop=a;[fromInput.value,toInput.value]=[toInput.value,fromInput.value];close(fromDrop);close(toDrop)});
+  document.addEventListener('click',e=>{if(!e.target.closest('.landing-field')){close(fromDrop);close(toDrop)}});
+  searchBtn.addEventListener('click',()=>{
+    if(!fromStop||!toStop){alert('Please select your boarding stop and destination from the suggestions.');return;}
+    if(!dateInput.value){alert('Please select a travel date.');return;}
+    if(Number(fromStop.route_id)!==Number(toStop.route_id)||Number(fromStop.stop_order)>=Number(toStop.stop_order)){
+      alert('Please choose a valid journey on the same route.');return;
+    }
+    sessionStorage.setItem('searchFrom',fromStop.name);
+    sessionStorage.setItem('searchTo',toStop.name);
+    sessionStorage.setItem('travelDate',dateInput.value);
+    sessionStorage.setItem('landingFromStop',JSON.stringify(fromStop));
+    sessionStorage.setItem('landingToStop',JSON.stringify(toStop));
+    sessionStorage.setItem('pendingLandingSearch','1');
+    location.href='../../auth/auth/login/login.html';
+  });
+  loadStops();
+})();
 
 /* Premium interaction layer */
 (function(){
