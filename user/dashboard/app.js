@@ -118,10 +118,9 @@ function message(t,error=false){const el=$('#plannerMessage');if(!el)return;el.i
 function closeDrop(d){d?.classList.remove('open');if(d)d.innerHTML=''}
 function render(input,drop,type){
  const q=input.value.trim().toLowerCase();if(!q){closeDrop(drop);return}
- let results=stops.filter(s=>String(s.name||'').toLowerCase().includes(q));
+ let results=stops.filter(s=>String(s.name||'').toLowerCase().startsWith(q));
  results.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),undefined,{sensitivity:'base'})||String(a.city||'').localeCompare(String(b.city||''),undefined,{sensitivity:'base'})||Number(a.stop_order||0)-Number(b.stop_order||0));
  if(type==='to'&&fromStop)results=results.filter(s=>Number(s.route_id)===Number(fromStop.route_id)&&s.name!==fromStop.name);
- results=results.slice(0,6);
  if(!results.length){drop.innerHTML='<div style="padding:10px;color:var(--muted);font-size:8px">No matching stops found.</div>';drop.classList.add('open');return}
  drop.innerHTML=results.map((s,i)=>'<button class="stop" type="button" data-i="'+i+'"><span class="stop-icon">●</span><span><b>'+clean(s.name)+'</b><small>'+clean(s.city||'')+' · '+clean(s.route_name||s.route_code||'Route')+'</small></span></button>').join('');
  drop.classList.add('open');
