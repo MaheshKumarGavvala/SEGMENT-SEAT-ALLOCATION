@@ -16,4 +16,4 @@ form{display:grid;gap:15px}.field{display:grid;gap:7px}.field>span{font-size:11p
 .google-btn{height:49px;border:1px solid #cbd2db;border-radius:8px;background:#fff;color:#2b3441;display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:750;transition:.18s}
 .google-btn:hover{border-color:#aeb7c4;background:#fafbfc;box-shadow:0 7px 16px rgba(20,27,39,.07);transform:translateY(-1px)}
 .google-btn:disabled{opacity:.65;cursor:wait;transform:none}
-.google-g{width:22px;height:22px;display:grid;place-items:center;font-size:16px;font-weight:900;font-family:Arial,sans-serif;color:#4285f4}
+.google-logo{width:20px;height:20px;display:block;flex:none}

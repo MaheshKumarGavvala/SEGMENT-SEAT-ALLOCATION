@@ -19,12 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateStrength = () => {
     const value = pass.value;
     let level = 0;
-    if (value.length >= 6) level = 1;
-    if (value.length >= 9 && /[A-Z]/.test(value)) level = 2;
-    if (value.length >= 10 && /[0-9]/.test(value)) level = 3;
-    if (value.length >= 12 && /[^A-Za-z0-9]/.test(value)) level = 4;
+    if (value.length >= 8) level = 1;
+    if (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value)) level = 2;
+    if (value.length >= 8 && /[0-9]/.test(value)) level = 3;
+    if (value.length >= 10 && /[^A-Za-z0-9]/.test(value)) level = 4;
     meter.dataset.level = level;
-    strength.textContent = ["Use at least 6 characters.", "Fair password", "Good password", "Strong password", "Excellent password"][level];
+    strength.textContent = ["Use 8+ chars, upper, lower & number.", "Fair password", "Good password", "Strong password", "Excellent password"][level];
   };
   pass.addEventListener("input", () => {
     updateStrength();
@@ -47,9 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
     msg.textContent = "";
     setError(name,nameError,""); setError(email,emailError,""); setError(pass,passwordError,"");
 
-    if (name.value.trim().length < 2) { setError(name,nameError,"Please enter your full name."); name.focus(); return; }
-    if (!email.value.trim() || !email.validity.valid) { setError(email,emailError,"Please enter a valid email address."); email.focus(); return; }
-    if (pass.value.length < 6) { setError(pass,passwordError,"Password must contain at least 6 characters."); pass.focus(); return; }
+    if (name.value.trim().length < 5 || name.value.trim().length > 20) { setError(name,nameError,"Name must be between 5 and 20 characters."); name.focus(); return; }
+    if (!/^[^\\s@]+@gmail\\.com$/i.test(email.value.trim())) { setError(email,emailError,"Please use a Gmail address ending with @gmail.com."); email.focus(); return; }
+    if (pass.value.length < 8 || !/[A-Z]/.test(pass.value) || !/[a-z]/.test(pass.value) || !/[0-9]/.test(pass.value)) { setError(pass,passwordError,"Password must be 8+ characters with uppercase, lowercase, and a number."); pass.focus(); return; }
 
     btn.disabled = true;
     btn.querySelector("span").textContent = "Creating account…";

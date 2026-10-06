@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f36f21"><title>Smart Segment | Sign in</title>
-<link rel="stylesheet" href="login.css?v=11">
+<link rel="stylesheet" href="login.css?v=14">
 </head>
 <body>
 <main class="login-page">
@@ -14,19 +14,24 @@
     </div>
     <div class="login-title"><span class="eyebrow">WELCOME BACK</span><h1>Sign in to your account</h1><p>Book smarter journeys and manage your tickets in one place.</p></div>
     <form id="loginForm" novalidate>
-      <label class="field"><span>Email <b>*</b></span><div class="control"><input id="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="emailError"><small id="emailError"></small></div></label>
+      <label class="field"><span>Email <b>*</b></span><div class="control"><input id="email" type="email" autocomplete="email" placeholder="you@gmail.com" aria-describedby="emailError"><small id="emailError"></small></div></label>
       <label class="field"><span>Password <b>*</b></span><div class="control"><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" aria-describedby="passwordError"><button class="eye" id="passwordToggle" type="button" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.3-5.5 9.5-5.5 9.5 5.5 9.5 5.5-3.3 5.5-9.5 5.5S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.5"/></svg></button><small id="passwordError"></small></div></label>
       <div class="field"><span>Continue as</span><div class="role-switch" id="roleSwitch"><button type="button" class="active" data-role="user">Passenger</button><button type="button" data-role="admin">Administrator</button></div></div>
       <input type="hidden" id="role" value="user">
       <div class="options"><label class="remember"><input type="checkbox" id="remember"> Remember me</label><a href="../forgot-password/forgot-password.html">Forgot password?</a></div>
       <button class="submit" id="submitBtn" type="submit"><span class="btn-text">Sign in</span><svg viewBox="0 0 24 24"><path d="M5 12h13m-6-6 6 6-6 6"/></svg></button>
       <div class="or-divider"><span>OR</span></div>
-      <button class="google-btn" id="googleBtn" type="button"><span class="google-g">G</span><span>Continue with Google</span></button>
+      <button class="google-btn" id="googleBtn" type="button"><svg class="google-logo" viewBox="0 0 48 48" aria-hidden="true">
+  <path fill="#EA4335" d="M24 9.5c3.54 0 6.72 1.22 9.22 3.6l6.85-6.85C35.9 2.63 30.47 0 24 0 14.61 0 6.51 5.38 2.56 13.22l7.98 6.2C12.43 13.06 17.74 9.5 24 9.5z"/>
+  <path fill="#4285F4" d="M46.98 24.55c0-1.64-.15-3.22-.43-4.55H24v9.02h12.94c-.58 2.98-2.27 5.51-4.83 7.2l7.77 6.03C44.4 38.09 46.98 31.91 46.98 24.55z"/>
+  <path fill="#FBBC05" d="M10.54 28.42A14.49 14.49 0 0 1 9.5 24c0-1.54.27-3.03 1.04-4.42l-7.98-6.2A24.02 24.02 0 0 0 0 24c0 3.84.92 7.48 2.56 10.62l7.98-6.2z"/>
+  <path fill="#34A853" d="M24 48c6.48 0 11.91-2.13 15.88-5.8l-7.77-6.03c-2.15 1.45-4.9 2.3-8.11 2.3-6.26 0-11.57-3.56-13.46-9.92l-7.98 6.2C6.51 42.62 14.61 48 24 48z"/>
+</svg><span>Continue with Google</span></button>
       <p class="message" id="message" role="alert"></p>
       <p class="bottom-link">New passenger? <a href="../register/register.html">Create your account</a></p>
     </form>
     <div class="login-footer"><span>SMART SEGMENT</span><i></i><span>Secure reservation platform</span></div>
   </section>
 </main>
-<script src="../../shared/js/api.js"></script><script src="login.js?v=11"></script>
+<script src="../../shared/js/api.js"></script><script src="login.js?v=14"></script>
 </body></html>

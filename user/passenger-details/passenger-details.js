@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded",()=>{
  const segments=(()=>{try{return Object.values(JSON.parse(sessionStorage.getItem("smartSegmentSelectedSegmentSeats")||"{}"))}catch(e){return []}})();
 
  const inputs=[...document.querySelectorAll(".form-grid input, .form-grid select")];
- const [name,age,gender,mobile,email,idProof,idProofNumber]=inputs;
+ const [name,age,gender,mobile,email]=inputs;
  const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 
  // Restore any unfinished passenger form when returning to this page.
@@ -16,13 +16,11 @@ document.addEventListener("DOMContentLoaded",()=>{
      if(gender)gender.value=draft.gender||"";
      if(mobile)mobile.value=String(draft.mobile||"").replace(/\D/g,"").slice(0,10);
      if(email)email.value=draft.email||"";
-     if(idProof)idProof.value=draft.id_proof_type||"";
-     if(idProofNumber)idProofNumber.value=draft.id_proof_number||"";
    }
  }catch(e){}
 
  name?.addEventListener("input",()=>name.value=name.value.toUpperCase());
- idProofNumber?.addEventListener("input",()=>idProofNumber.value=idProofNumber.value.toUpperCase());
+
  mobile?.addEventListener("input",()=>{mobile.value=mobile.value.replace(/\D/g,"").slice(0,10);});
 
  const savePassengerDraft=()=>{
@@ -33,13 +31,12 @@ document.addEventListener("DOMContentLoaded",()=>{
        gender:gender?.value?.toUpperCase()||"",
        mobile:mobile?.value?.replace(/\D/g,"")||"",
        email:email?.value?.trim().toLowerCase()||"",
-       id_proof_type:idProof?.value?.toUpperCase()||"",
-       id_proof_number:idProofNumber?.value?.trim().toUpperCase()||""
+       
      }));
    }catch(e){}
  };
- [name,age,gender,mobile,email,idProof,idProofNumber].forEach(el=>el?.addEventListener("input",savePassengerDraft));
- [gender,idProof].forEach(el=>el?.addEventListener("change",savePassengerDraft));
+ [name,age,gender,mobile,email].forEach(el=>el?.addEventListener("input",savePassengerDraft));
+ [gender].forEach(el=>el?.addEventListener("change",savePassengerDraft));
 
  const selectedRows=segments.length
    ?segments
@@ -75,7 +72,7 @@ document.addEventListener("DOMContentLoaded",()=>{
  next?.addEventListener("click",e=>{
    e.preventDefault();
    if(!selectedRows.length){showToast("Select a seat before continuing.");return}
-   if(!name?.value.trim()||!age?.value||!gender?.value||!mobile?.value.trim()||!idProof?.value||!idProofNumber?.value.trim()){
+   if(!name?.value.trim()||!age?.value||!gender?.value||!mobile?.value.trim()){
      showToast("Please complete all required passenger details.");return;
    }
    const phone=mobile.value.replace(/\D/g,"");
@@ -86,9 +83,7 @@ document.addEventListener("DOMContentLoaded",()=>{
      age:Number(age.value),
      gender:gender.value.toUpperCase(),
      mobile:phone,
-     email:email.value.trim().toLowerCase(),
-     id_proof_type:idProof.value.toUpperCase(),
-     id_proof_number:idProofNumber.value.trim().toUpperCase()
+     email:email.value.trim().toLowerCase()
    };
    sessionStorage.setItem("passengerDetails",JSON.stringify(passengerData));
    sessionStorage.setItem("passengerDetailsDraft",JSON.stringify(passengerData));
