@@ -62,18 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setError(email, emailError, "");
     setError(pass, passwordError, "");
 
-    if (!/^[^\\s@]+@gmail\\.com$/i.test(email.value.trim())) {
+    if (!/^[^\s@]+@gmail\.com$/i.test(email.value.trim())) {
       setError(email, emailError, "Please use a Gmail address ending with @gmail.com.");
       email.focus();
       return;
     }
     if (!pass.value) {
       setError(pass, passwordError, "Please enter your password.");
-      pass.focus();
-      return;
-    }
-    if (pass.value.length < 8 || !/[A-Z]/.test(pass.value) || !/[a-z]/.test(pass.value) || !/[0-9]/.test(pass.value)) {
-      setError(pass, passwordError, "Password must be 8+ characters with uppercase, lowercase, and a number.");
       pass.focus();
       return;
     }
